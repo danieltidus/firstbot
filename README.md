@@ -1,7 +1,7 @@
 # firstbot
 
-##Dependencies
+## Dependencies
 
-###Module requests
+### Module requests
 
 `$ pip install requests`
