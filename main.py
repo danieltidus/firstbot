@@ -72,6 +72,8 @@ while 1:
         else:
             str_ = "Pair " + c["pair"] + " with LongEx " + c["LongEx"] + " and ShortEx " + c["ShortEx"] + " ON Market";
             logging.info(str_);
+            str_ = "Current spread " + str(round(spread[c["id"]]*100,2)) + " and target spread to exit " + str(round(spreadExit[c["id"]]*100,2));
+            logging.info(str_);
             if spread[c["id"]] <= spreadExit[c["id"]]:
                 str_ = "We found a exit opportunity for pair " + c["pair"];
                 logging.info(str_);
