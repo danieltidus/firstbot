@@ -5,9 +5,9 @@ import ConfigParser
 class ExchangeFactory(object):
 
   def create(self, exchange):
-    if exchange == 'poloniex':
-        config = ConfigParser.RawConfigParser();
-        config.read('bot.cfg');
-        return Poloniex(config.get('poloniex', 'apiKey'), config.get('poloniex', 'secret'));
-    elif exchange == 'bittrex':
-        return Bittrex('Teste');
+    config = ConfigParser.RawConfigParser();
+    config.read('bot.cfg');
+    if exchange == 'Poloniex':
+        return Poloniex(config.get('Poloniex', 'apiKey'), config.get('Poloniex', 'secret'));
+    elif exchange == 'Bittrex':
+        return Bittrex(config.get('Bittrex', 'apiKey'), config.get('Bittrex', 'secret'));

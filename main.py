@@ -1,14 +1,99 @@
 import json
 import pprint
+import botlib;
+import time;
+import timeit;
+from datetime import datetime
+import math;
+import logging;
 from exchanges.exchangefactory import ExchangeFactory
+
 
 fac = ExchangeFactory();
 
-a = fac.create('poloniex');
-exchange_sets = {};
+exchanges = {};
+exchanges['Poloniex'] = fac.create('Poloniex');
+exchanges['Bittrex'] = fac.create('Bittrex');
 
-exchange_sets["poloniex"] = a.getLongShortPairs();
-for key in exchange_sets:
-    for key_b in exchange_sets[key]:
-        print key_b
-        print exchange_sets[key][key_b];
+#Verify arbitrages for long/shorts combinations
+#Parameters - TODO Put on config file;
+spreadEntry=0.0080;
+spreadTarget=0.0050;
+simulationTime = 15.0; #simulation time in seconds
+#########################
+
+spreadExit = [];
+combinations = [];
+combinations = botlib.findCombinations(exchanges);
+print combinations
+
+print exchanges['Bittrex'].getBid("BTC_LTC");
+print exchanges['Bittrex'].getAsk("BTC_LTC");
+#Just for tests
+fees = 0.0090;
+spread = {};
+spreadExit = {};
+profitCount = {};
+
+for c in combinations:
+    profitCount[c["id"]] = 0;
+    pass
+
+print profitCount
+
+str_ = "log_" + datetime.now().strftime("%Y%m%d%H%M%S");
+logging.basicConfig(filename=str_, format='%(levelname)s:%(message)s', level=logging.INFO)
+logging.info("Start simulation at %s", datetime.now().ctime());
+logging.info("");
+logging.info("");
+
+while 1:
+    start = timeit.default_timer();
+    #Looking entry opportunities
+    for c in combinations:
+        priceLong = exchanges[c["LongEx"]].getBid(c["pair"]);
+        priceShort = exchanges[c["ShortEx"]].getAsk(c["pair"]);
+
+        if (priceLong > 0.0 and priceShort > 0.0):
+            spread[c["id"]] = (priceShort - priceLong)/priceLong;
+        else:
+            spread[c["id"]] = 0.0
+        pass
+
+        if not (c["id"] in spreadExit):
+            str_ = "Spread in for pair " + c["pair"] + " is " + str(round(spread[c["id"]]*100,2)) + " %";
+            logging.info(str_);
+            if spread[c["id"]] >= spreadEntry:
+                logging.info("We found a arbitrage opportunity");
+                spreadExit[c["id"]] = spread[c["id"]] - spreadTarget - fees;
+            pass
+
+        #Looking exit opportunities
+        else:
+            str_ = "Pair " + c["pair"] + " with LongEx " + c["LongEx"] + " and ShortEx " + c["ShortEx"] + " ON Market";
+            logging.info(str_);
+            if spread[c["id"]] <= spreadExit[c["id"]]:
+                str_ = "We found a exit opportunity for pair " + c["pair"];
+                logging.info(str_);
+                str_ = "We made " + str(spreadTarget*100) + "% of profit!"
+                logging.info(str_);
+                spreadExit.pop(c["id"]);
+                profitCount[c["id"]] = profitCount[c["id"]] + 1;
+            pass
+    pass
+
+    print
+
+    logging.info("Simulation resume");
+    logging.info("Profit count for earch pair");
+
+    for c in combinations:
+        str_ = "Times that profit occurs on pair " + c["pair"] + ": " + str(profitCount[c["id"]]);
+        logging.info(str_);
+        pass
+
+    logging.info("\n\n");
+
+    stop =  timeit.default_timer();
+    time.sleep(math.fabs(simulationTime - round(stop - start)));
+pass
