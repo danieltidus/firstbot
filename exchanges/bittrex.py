@@ -36,6 +36,11 @@ class Bittrex (Exchange):
         for value in pairs:
             long_pairs[value["MarketCurrency"]] = value["BaseCurrency"];
 
+        #INFO Bug on bittrex for this pairs. Forcing add;
+        long_pairs['LTC'] = 'BTC';
+        long_pairs['ETH'] = 'BTC';
+        long_pairs['XRP'] = 'BTC';
+
         m_type["LONG"] = long_pairs;
         m_type["SHORT"] = short_pairs;
 

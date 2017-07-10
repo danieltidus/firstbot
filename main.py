@@ -19,7 +19,7 @@ exchanges['Bittrex'] = fac.create('Bittrex');
 #Parameters - TODO Put on config file;
 spreadEntry=0.0080;
 spreadTarget=0.0050;
-simulationTime = 15.0; #simulation time in seconds
+simulationTime = 10.0; #simulation time in seconds
 #########################
 
 spreadExit = [];
@@ -27,7 +27,7 @@ combinations = [];
 combinations = botlib.findCombinations(exchanges);
 print combinations
 
-print exchanges['Bittrex'].getBid("BTC_LTC");
+print exchanges['Bittrex'].getBid("BTC_ETH");
 print exchanges['Bittrex'].getAsk("BTC_LTC");
 #Just for tests
 fees = 0.0090;

@@ -9,6 +9,10 @@ def findCombinations(exchanges = {}):
     for ex in exchanges:
         print "Get LongShortPairs to exchange: " + exchanges[ex].getExchangeName();
         pairsByExchange[exchanges[ex].getExchangeName()] = exchanges[ex].getLongShortPairs();
+
+        # print "Long short to " + exchanges[ex].getExchangeName()
+        # print pairsByExchange[exchanges[ex].getExchangeName()]
+        # print "\n\n\n\n"
         pass
     id_ = 0;
     for ex in pairsByExchange:
