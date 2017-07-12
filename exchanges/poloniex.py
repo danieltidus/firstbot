@@ -11,13 +11,28 @@ class Poloniex (Exchange):
         return self.apiKey + " da Poloniex";
 
     def getBid(self, currencyPair):
-        return float(self.pol.returnTicker()[currencyPair]["highestBid"]);
+        try:
+            return float(self.pol.returnTicker()[currencyPair]["highestBid"]);
+        except Exception, error:
+            print("Error getting Bid");
+            print str(error);
+            return 0.0;
 
     def getAsk(self, currencyPair):
-        return float(self.pol.returnTicker()[currencyPair]["lowestAsk"]);
+        try:
+            return float(self.pol.returnTicker()[currencyPair]["lowestAsk"]);
+        except Exception, error:
+            print("Error getting Ask");
+            print str(error);
+            return 0.0;
 
     def ticker(self):
-        return self.pol.returnTicker();
+        try:
+            return self.pol.returnTicker();
+        except Exception, error:
+            print("Error accessing ticker!");
+            print str(error);
+            return {};
 
     def tradableBalances(self):
         return self.pol.returnTradableBalances();
@@ -32,19 +47,28 @@ class Poloniex (Exchange):
         short_pairs = {};
         m_type = {};
 
-        result = self.ticker();
+        try:
+            result = self.ticker();
 
-        for key in result.keys():
-            str_array = key.split('_');
-            long_pairs[str_array[1]] = str_array[0];
+            for key in result.keys():
+                str_array = key.split('_');
+                long_pairs[str_array[1]] = str_array[0];
 
-        m_type["LONG"] = long_pairs;
+            m_type["LONG"] = long_pairs;
 
-        result = self.tradableBalances();
+            result = self.tradableBalances();
 
-        for key in result.keys():
-            str_array = key.split('_');
-            short_pairs[str_array[1]] = str_array[0];
+            for key in result.keys():
+                str_array = key.split('_');
+                short_pairs[str_array[1]] = str_array[0];
 
-        m_type["SHORT"] = short_pairs;
-        return m_type;
+            m_type["SHORT"] = short_pairs;
+
+        except Exception, error:
+            print("Error on method getLongShortPairs!");
+            print str(error);
+            m_type["LONG"] = {};
+            m_type["SHORT"] = {};
+
+        finally:
+            return m_type;

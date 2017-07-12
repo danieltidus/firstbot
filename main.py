@@ -60,23 +60,27 @@ while 1:
             spread[c["id"]] = 0.0
         pass
 
-        if not (c["id"] in spreadExit):
+        if not (c["id"] in spreadExit): #If not already ON Market
             str_ = "Spread in for pair " + c["pair"] + " is " + str(round(spread[c["id"]]*100,2)) + " %";
             logging.info(str_);
-            if spread[c["id"]] >= spreadEntry:
+            if spread[c["id"]] >= spreadEntry: #TODO chekEntry-like process checkEntry(c["id"], priceLong, princeShort, spread, spreadEntry)
                 logging.info("We found a arbitrage opportunity");
                 spreadExit[c["id"]] = spread[c["id"]] - spreadTarget - fees;
+                #TODO Code to buy the asset
             pass
 
-        #Looking exit opportunities
-        else:
+
+        else: #Looking exit opportunities
             str_ = "Pair " + c["pair"] + " with LongEx " + c["LongEx"] + " and ShortEx " + c["ShortEx"] + " ON Market";
             logging.info(str_);
             str_ = "Current spread " + str(round(spread[c["id"]]*100,2)) + " and target spread to exit " + str(round(spreadExit[c["id"]]*100,2));
             logging.info(str_);
-            if spread[c["id"]] <= spreadExit[c["id"]]:
+            if spread[c["id"]] <= spreadExit[c["id"]]: #TODO checkExit-like process
                 str_ = "We found a exit opportunity for pair " + c["pair"];
                 logging.info(str_);
+                #TODO Code to sell the asset e possible made profit;
+
+                #INFO here are log info. Maybe remove this after
                 str_ = "We made " + str(spreadTarget*100) + "% of profit!"
                 logging.info(str_);
                 spreadExit.pop(c["id"]);

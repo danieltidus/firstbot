@@ -14,14 +14,27 @@ class Bittrex (Exchange):
         return 0.0025;
 
     def getBid(self, currencyPair):
-        str_pair = currencyPair.split('_');
-        pair = str_pair[0]+"-"+str_pair[1];
-        return self.bit.get_ticker(pair)["result"]["Bid"];
+
+         try:
+             str_pair = currencyPair.split('_');
+             pair = str_pair[0]+"-"+str_pair[1];
+             return self.bit.get_ticker(pair)["result"]["Bid"];
+         except Exception, error:
+             print("Error getting Bid");
+             print str(error);
+             return 0.0;
+
 
     def getAsk(self, currencyPair):
-        str_pair = currencyPair.split('_');
-        pair = str_pair[0]+"-"+str_pair[1];
-        return self.bit.get_ticker(pair)["result"]["Ask"];
+        try:
+            str_pair = currencyPair.split('_');
+            pair = str_pair[0]+"-"+str_pair[1];
+            return self.bit.get_ticker(pair)["result"]["Ask"];
+        except Exception, error:
+            print("Error getting Ask");
+            print str(error);
+            return 0.0;
+
 
     #Creating long and shorts sets of pairs.
     def getLongShortPairs(self):
@@ -29,19 +42,27 @@ class Bittrex (Exchange):
         short_pairs = {};
         m_type = {};
 
-        result = self.bit.get_markets();
+        try:
+            result = self.bit.get_markets();
 
-        pairs = result["result"];
+            pairs = result["result"];
 
-        for value in pairs:
-            long_pairs[value["MarketCurrency"]] = value["BaseCurrency"];
+            for value in pairs:
+                long_pairs[value["MarketCurrency"]] = value["BaseCurrency"];
 
-        #INFO Bug on bittrex for this pairs. Forcing add;
-        long_pairs['LTC'] = 'BTC';
-        long_pairs['ETH'] = 'BTC';
-        long_pairs['XRP'] = 'BTC';
+            #TODO Bug on bittrex for this pairs. FIXME add BTC-LTC, BTC-ETH and BTC-XRP hardcoded;
+            long_pairs['LTC'] = 'BTC';
+            long_pairs['ETH'] = 'BTC';
+            long_pairs['XRP'] = 'BTC';
 
-        m_type["LONG"] = long_pairs;
-        m_type["SHORT"] = short_pairs;
+            m_type["LONG"] = long_pairs;
+            m_type["SHORT"] = short_pairs;
 
-        return m_type;
+        except Exception, error:
+            print("Error getting Long short pairs for Bittrex");
+            print str(error);
+            m_type["LONG"] = {};
+            m_type["SHORT"] = {};
+
+        finally:
+            return m_type;
