@@ -17,8 +17,8 @@ exchanges['Bittrex'] = fac.create('Bittrex')
 
 #Verify arbitrages for long/shorts combinations
 #Parameters - TODO Put on config file;
-spreadEntry=0.0020
-spreadTarget=0.0020
+spreadEntry=0.0080
+spreadTarget=0.0050
 simulationTime = 10.0 #simulation time in seconds
 #########################
 
@@ -58,16 +58,18 @@ while 1:
 
     for c in combinations:
 
-        priceLong = exchanges[c["LongEx"]].getAsk(c["pair"])
-        priceShort = exchanges[c["ShortEx"]].getBid(c["pair"])
-
-        if (priceLong > 0.0 and priceShort > 0.0):
-            spread[c["id"]] = (priceShort - priceLong)/priceLong
-        else:
-            spread[c["id"]] = 0.0
-        pass
 
         if not (c["id"] in spreadExit): #If not already ON Market
+
+            priceLong = exchanges[c["LongEx"]].getAsk(c["pair"])
+            priceShort = exchanges[c["ShortEx"]].getBid(c["pair"])
+
+            if (priceLong > 0.0 and priceShort > 0.0):
+                spread[c["id"]] = (priceShort - priceLong) / priceLong
+            else:
+                spread[c["id"]] = 0.0
+            pass
+
             str_ = "Spread in for pair " + c["pair"] + " is " + str(round(spread[c["id"]]*100,2)) + " %"
             logging.info(str_);
             if spread[c["id"]] >= spreadEntry: #TODO chekEntry-like process checkEntry(c["id"], priceLong, princeShort, spread, spreadEntry)
@@ -77,7 +79,7 @@ while 1:
 
 
                 #TODO Inserting code to secure get inside the arbitrage
-                realSpread = secureIn(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLong, balanceShort, c["pair"],
+                realSpread = botlib.secureIn(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLong, balanceShort, c["pair"],
                          priceLong, priceShort, 0.02, 2, spreadEntry)
                 if realSpread != -1000:
                     logging.info("Everything ok! Arbitrage opportunity explored!")
@@ -89,6 +91,16 @@ while 1:
 
             pass
         else: #Looking exit opportunities
+
+            priceLong = exchanges[c["LongEx"]].getBid(c["pair"])
+            priceShort = exchanges[c["ShortEx"]].getAsk(c["pair"])
+
+            if (priceLong > 0.0 and priceShort > 0.0):
+                spread[c["id"]] = (priceShort - priceLong) / priceLong
+            else:
+                spread[c["id"]] = 0.0
+            pass
+
             str_ = "Pair " + c["pair"] + " with LongEx " + c["LongEx"] + " and ShortEx " + c["ShortEx"] + " ON Market"
             logging.info(str_)
             str_ = "Current spread " + str(round(spread[c["id"]]*100,2)) + " and target spread to exit " + str(round(spreadExit[c["id"]]*100,2))
@@ -96,7 +108,14 @@ while 1:
             if spread[c["id"]] <= spreadExit[c["id"]]: #TODO checkExit-like process
                 str_ = "We found a exit opportunity for pair " + c["pair"]
                 logging.info(str_)
+
+
+
                 #TODO Code to sell the asset e possible made profit;
+
+
+
+
 
                 #INFO here are log info. Maybe remove this after
                 str_ = "We made " + str(spreadTarget*100) + "% of profit!"
