@@ -109,19 +109,29 @@ while 1:
                 str_ = "We found a exit opportunity for pair " + c["pair"]
                 logging.info(str_)
 
+                # TODO Code to sell the asset e possible made profit;
+                str_pair = c["pair"].split('_')
+                print "Splitting ..." + str_pair[0] + " " + str_pair[1]
 
 
-                #TODO Code to sell the asset e possible made profit;
+                balanceLongAltCoin = exchanges[c["LongEx"]].getBalance(str_pair[0])
+                balanceShortAltCoin = exchanges[c["ShortEx"]].getMarginBalance(str_pair[1])
+                print "balanceLongAltCoin: " + str(balanceLongAltCoin) + " balanceShortAltCoin: " + str(balanceShortAltCoin)
+
+                realSpread = secureOut(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLongAltCoin, balanceShortAltCoin, c["pair"], priceLong,
+                          priceShort, 2, spreadExit[c["id"]])
+
+                if realSpread != -1000:
+                    logging.info("Everything ok! Arbitrage opportunity completed. Probably we make profit!")
+                    # INFO here are log info. Maybe remove this after
+                    str_ = "We made " + str(spreadTarget * 100) + "% of profit!"
+                    logging.info(str_)
+                    spreadExit.pop(c["id"])
+                    profitCount[c["id"]] = profitCount[c["id"]] + 1
+                else:
+                    logging.info("Arbitrage opportunity to exit not explored")
 
 
-
-
-
-                #INFO here are log info. Maybe remove this after
-                str_ = "We made " + str(spreadTarget*100) + "% of profit!"
-                logging.info(str_)
-                spreadExit.pop(c["id"])
-                profitCount[c["id"]] = profitCount[c["id"]] + 1
             pass
     pass
 

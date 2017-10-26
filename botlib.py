@@ -151,10 +151,10 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
 
 # Securely buy/sell an amount of coins based on lowest ask price of order book and an secure factor based on amount of coin available
 #Return order to be checked or -1 if some error
-def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCoin, currencyPair, askPrice, bidPrice, btc_amount=0.02, secureFactor=2, spreadTarget=-0.0008):
+def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCoin, currencyPair, longPrice, shortPrice, secureFactor=2, spreadTarget=-0.0008):
     pp = pprint.PrettyPrinter(indent=4)
 
-    if askPrice <= 0 or bidPrice <=0:
+    if longPrice <= 0 or shortPrice <=0:
         return -1000
 
     print "secureBuy::Balance on long altcoin exchange " + str(balanceLongAltCoin)
@@ -174,66 +174,65 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     print "Orderbook Short..."
     pp.pprint(orderBookShort)
 
-    print "secureBuy::Ask Price: " + "{:.8f}".format(askPrice) + ". Secure factor: " + str(secureFactor) + "x"
-    print "secureBuy::Bid Price: " + "{:.8f}".format(bidPrice) + ". Secure factor: " + str(secureFactor) + "x"
+    print "secureBuy::Long Price: " + "{:.8f}".format(longPrice) + ". Secure factor: " + str(secureFactor) + "x"
+    print "secureBuy::Short Price: " + "{:.8f}".format(shortPrice) + ". Secure factor: " + str(secureFactor) + "x"
 
-    btc_volume_avaiable_long = 0  # Store the amount of available coins to buy converted in bitcoin
-    btc_volume_avaiable_short = 0  # Store the amount of available coins to sell converted in bitcoin
-    newAskPrice = 0.0
-    newBidPrice = 0.0
+    altcoin_volume_avaiable_long = 0  # Store the amount of available coins to buy converted in bitcoin
+    altcoin_volume_avaiable_short = 0  # Store the amount of available coins to sell converted in bitcoin
+    newLongPrice = 0.0
+    newShortPrice = 0.0
 
     #Calculating liquidity in each book
     for x in orderBookLong:
-        btc_volume_avaiable_long += float(x[0]) * float(x[1])
-        newAskPrice = float(x[0])
-        if btc_volume_avaiable_long >= btc_amount*secureFactor:
+        altcoin_volume_avaiable_long += float(x[1])
+        newLongPrice = float(x[0])
+        if altcoin_volume_avaiable_long >= balanceLongAltCoin*secureFactor:
             break
         pass
     pass
 
-    btc_volume_avaiable = 0
     for x in orderBookShort:
-        btc_volume_avaiable_short += float(x[0]) * float(x[1])
-        newBidPrice = float(x[0])
-        if btc_volume_avaiable_short >= btc_amount*secureFactor:
+        altcoin_volume_avaiable_short += float(x[1])
+        newShortPrice = float(x[0])
+        if altcoin_volume_avaiable_short >= balanceShortAltCoin*secureFactor:
             break
         pass
     pass
 
-    print "secureBuy:: New Ask price " + str(newAskPrice)
-    print "secureBuy:: New Bid price " + str(newBidPrice)
+    print "secureBuy:: New Long price " + str(newLongPrice)
+    print "secureBuy:: New Short price " + str(newShortPrice)
 
     #Verify if we have error with new prices
-    if newAskPrice == 0.0 or newBidPrice == 0.0:
+    if newLongPrice == 0.0 or newShortPrice == 0.0:
         print "secureBuy::Something wrong with order books. Stopping operations..."
         return -1000
     pass
 
-    print "secureBuy:: BTC Amount available on Long " + str(btc_volume_avaiable_long)
-    print "secureBuy:: BTC Amount available on short " + str(btc_volume_avaiable_short)
+    print "secureBuy:: Altcoin Amount available on Long " + str(altcoin_volume_avaiable_long)
+    print "secureBuy:: Altcoin Amount available on short " + str(altcoin_volume_avaiable_short)
     # Verify if we have errors with liquidity
-    if btc_volume_avaiable_long < btc_amount*secureFactor or btc_volume_avaiable_short < btc_amount*secureFactor:
+    if altcoin_volume_avaiable_long < balanceLongAltCoin*secureFactor or altcoin_volume_avaiable_short < balanceShortAltCoin*secureFactor:
         print "secureBuy::Not enough liquidity. Stopping operations..."
         return -1000
     pass
 
     print "secureBuy:: Current Spread " + str(spreadTarget)
-    print "secureBuy:: New Spread " +  "{:.8f}".format(((newBidPrice - newAskPrice)/newAskPrice))
+    print "secureBuy:: New Spread " +  "{:.8f}".format(((newShortPrice - newLongPrice)/newLongPrice))
 
     # Verify if we have error with spreadTarget
-    if spreadTarget > ((newBidPrice - newAskPrice)/newAskPrice):
+    if spreadTarget < ((newShortPrice - newLongPrice)/newLongPrice):
         print "secureBuy::Invalid new spread. We lost the opportunity. Stopping operations..."
         return -1000
     pass
 
     #Run operations in parallel
-    #t_long = threadgin.Thread(target=exchangeLong.buy, args=(currencyPair, newAskPrice, btc_amount / newAskPrice) )
-    #t_short = hreadgin.Thread(target=exchangeLong.sellMargin, args=(currencyPair, newBidPrice, btc_amount / newBidPrice) )
+    #t_long = threadgin.Thread(target=exchangeLong.sell, args=(currencyPair, newLongPrice, balanceLongAltCoin) )
+    #t_short = threadgin.Thread(target=exchangeLong.buyMargin, args=(currencyPair, newShortPrice, balanceShortAltCoin) )
 
     #Wait operations to be concluded
     #t_long.join()
     #t_short.join()
 
-    print "secureBuy::Buy/Sell orders registered..."
+    print "secureBuy::Sell/buyMargin orders registered..."
 
-    return ((newBidPrice - newAskPrice)/newAskPrice)
+    return ((newShortPrice - newLongPrice)/newLongPrice)

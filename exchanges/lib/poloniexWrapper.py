@@ -69,7 +69,7 @@ class poloniex:
     # Outputs:
     # {"BTC":"0.59098578","LTC":"3.31117268", ... }
     def returnBalances(self):
-        return self.api_query('returnBalances')
+        return self.api_query('returnCompleteBalances', {"account" : "all"})
 
     # Returns your open orders for a given market, specified by the "currencyPair" POST parameter, e.g. "BTC_XCP"
     # Inputs:
@@ -144,3 +144,13 @@ class poloniex:
 
     def returnFeeInfo(self):
         return self.api_query('returnFeeInfo');
+
+    def marginBuy(self,currencyPair,rate,amount):
+        return self.api_query('marginBuy', {"currencyPair":currencyPair,"rate":rate,"amount":amount})
+
+    def marginSell(self, currencyPair,rate,amount):
+        return self.api_query('marginSell', {"currencyPair": currencyPair, "rate": rate, "amount": amount})
+
+    def getMarginPosition(self, currencyPair):
+        return self.api_query('getMarginPosition', {"currencyPair": currencyPair})
+

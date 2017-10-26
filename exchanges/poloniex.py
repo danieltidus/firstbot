@@ -51,13 +51,28 @@ class Poloniex (Exchange):
     def buy(self, currencyPair, price, amount):
         return self.pol.buy(currencyPair, price, amount)
 
+    def sell(self, currencyPair, price, amount):
+        return self.pol.sell(currencyPair, price, amount)
+
+    def buyMargin(self, currencyPair, price, amount):
+        return self.pol.marginBuy(currencyPair, price, amount)
+
+    def sellMargin(self, currencyPair, price, amount):
+        return self.pol. marginSell( currencyPair, price, amount)
+
     #Return balance by currnency. Return -1 if a invalid currency is passed
     def getBalance(self, currency):
         try:
-            return  float(self.pol.returnBalances()[currency])
+            return  float(self.pol.returnBalances()[currency]['available'])
         except KeyError as e:
             print "KeyError: " + str(e)
             return -1
+
+    def getMarginBalance(self, currencyPair):
+        try:
+            return float(self.pol.getMarginPosition(currencyPair)['amount'])
+        except KeyError as e:
+            print "KeyError: " + str(e)
 
     def returnOpenOrders(self, currencyPair):
         return self.pol.returnOpenOrders(currencyPair)
