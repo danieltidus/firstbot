@@ -17,8 +17,8 @@ exchanges['Bittrex'] = fac.create('Bittrex')
 
 #Verify arbitrages for long/shorts combinations
 #Parameters - TODO Put on config file;
-spreadEntry=0.0080
-spreadTarget=0.0050
+spreadEntry=0.0020
+spreadTarget=0.0020
 simulationTime = 10.0 #simulation time in seconds
 #########################
 
@@ -50,9 +50,9 @@ while 1:
     start = timeit.default_timer()
     #Looking entry opportunities
 
-    print "Get Balance long..."
+    #print "Get Balance long..."
     balanceLong = exchanges['Bittrex'].getBalance('BTC')
-    print "Get Balance short..."
+    #print "Get Balance short..."
     balanceShort = exchanges['Poloniex'].getBalance('BTC')
 
 
@@ -116,7 +116,7 @@ while 1:
         logging.info(str_)
         pass
 
-    logging.info("\n\n")
+    logging.info("\n")
 
     stop =  timeit.default_timer()
     time.sleep(math.fabs(simulationTime - round(stop - start)))
