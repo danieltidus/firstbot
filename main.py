@@ -22,7 +22,7 @@ spreadTarget=0.0010
 simulationTime = 10.0 #simulation time in seconds
 #########################
 
-spreadExit = [];
+spreadExit = []
 combinations = botlib.findCombinations(exchanges)
 print combinations
 
@@ -134,8 +134,6 @@ while 1:
 
             pass
     pass
-
-    print
 
     logging.info("[ %s ] Simulation resume", datetime.now().ctime())
     logging.info("[ %s ] Profit count for earch pair", datetime.now().ctime())
