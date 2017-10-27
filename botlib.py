@@ -125,8 +125,8 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     pass
 
     #Run operations in parallel
-    #t_long = threadgin.Thread(target=exchangeLong.buy, args=(currencyPair, newAskPrice, btc_amount / newAskPrice) )
-    #t_short = hreadgin.Thread(target=exchangeLong.sellMargin, args=(currencyPair, newBidPrice, btc_amount / newBidPrice) )
+    #t_long = threading.Thread(target=exchangeLong.buy, args=(currencyPair, newAskPrice, btc_amount / newAskPrice) )
+    #t_short = threading.Thread(target=exchangeLong.sellMargin, args=(currencyPair, newBidPrice, btc_amount / newBidPrice) )
 
     #Wait operations to be concluded
     #t_long.join()
@@ -226,8 +226,8 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     pass
 
     #Run operations in parallel
-    #t_long = threadgin.Thread(target=exchangeLong.sell, args=(currencyPair, newLongPrice, balanceLongAltCoin) )
-    #t_short = threadgin.Thread(target=exchangeLong.buyMargin, args=(currencyPair, newShortPrice, balanceShortAltCoin) )
+    #t_long = threading.Thread(target=exchangeLong.sell, args=(currencyPair, newLongPrice, balanceLongAltCoin) )
+    #t_short = threading.Thread(target=exchangeLong.buyMargin, args=(currencyPair, newShortPrice, balanceShortAltCoin) )
 
     #Wait operations to be concluded
     #t_long.join()

@@ -17,8 +17,8 @@ exchanges['Bittrex'] = fac.create('Bittrex')
 
 #Verify arbitrages for long/shorts combinations
 #Parameters - TODO Put on config file;
-spreadEntry=0.0080
-spreadTarget=0.0050
+spreadEntry=0.0010
+spreadTarget=0.0010
 simulationTime = 10.0 #simulation time in seconds
 #########################
 
@@ -70,10 +70,10 @@ while 1:
                 spread[c["id"]] = 0.0
             pass
 
-            str_ = "Spread in for pair " + c["pair"] + " is " + str(round(spread[c["id"]]*100,2)) + " %"
-            logging.info(str_);
+            str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Spread in for pair " + c["pair"] + " is " + str(round(spread[c["id"]]*100,2)) + " %"
+            logging.info(str_)
             if spread[c["id"]] >= spreadEntry: #TODO chekEntry-like process checkEntry(c["id"], priceLong, princeShort, spread, spreadEntry)
-                logging.info("We found a arbitrage opportunity")
+                logging.info("[ %s ] We found a arbitrage opportunity", datetime.now().ctime())
 
 
 
@@ -82,10 +82,10 @@ while 1:
                 realSpread = botlib.secureIn(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLong, balanceShort, c["pair"],
                          priceLong, priceShort, 0.02, 2, spreadEntry)
                 if realSpread != -1000:
-                    logging.info("Everything ok! Arbitrage opportunity explored!")
+                    logging.info("[ %s ] Everything ok! Arbitrage opportunity explored!", datetime.now().ctime())
                     spreadExit[c["id"]] = realSpread - spreadTarget - fees
                 else:
-                    logging.info("Arbitrage opportunity not explored")
+                    logging.info(" [ %s ] Arbitrage opportunity not explored", datetime.now().ctime())
 
 
 
@@ -101,12 +101,12 @@ while 1:
                 spread[c["id"]] = 0.0
             pass
 
-            str_ = "Pair " + c["pair"] + " with LongEx " + c["LongEx"] + " and ShortEx " + c["ShortEx"] + " ON Market"
+            str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Pair " + c["pair"] + " with LongEx " + c["LongEx"] + " and ShortEx " + c["ShortEx"] + " ON Market"
             logging.info(str_)
-            str_ = "Current spread " + str(round(spread[c["id"]]*100,2)) + " and target spread to exit " + str(round(spreadExit[c["id"]]*100,2))
+            str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Current spread " + str(round(spread[c["id"]]*100,2)) + " and target spread to exit " + str(round(spreadExit[c["id"]]*100,2))
             logging.info(str_)
             if spread[c["id"]] <= spreadExit[c["id"]]: #TODO checkExit-like process
-                str_ = "We found a exit opportunity for pair " + c["pair"]
+                str_ = "[ " + str(datetime.now().ctime()) + " ] " + "We found a exit opportunity for pair " + c["pair"]
                 logging.info(str_)
 
                 # TODO Code to sell the asset e possible made profit;
@@ -122,14 +122,14 @@ while 1:
                           priceShort, 2, spreadExit[c["id"]])
 
                 if realSpread != -1000:
-                    logging.info("Everything ok! Arbitrage opportunity completed. Probably we make profit!")
+                    logging.info(" [ %s ] Everything ok! Arbitrage opportunity completed. Probably we make profit!", datetime.now().ctime())
                     # INFO here are log info. Maybe remove this after
-                    str_ = "We made " + str(spreadTarget * 100) + "% of profit!"
+                    str_ = "[ " + str(datetime.now().ctime()) + " ] " + "We made " + str(spreadTarget * 100) + "% of profit!"
                     logging.info(str_)
                     spreadExit.pop(c["id"])
                     profitCount[c["id"]] = profitCount[c["id"]] + 1
                 else:
-                    logging.info("Arbitrage opportunity to exit not explored")
+                    logging.info(" [ %s ] Arbitrage opportunity to exit not explored", datetime.now().ctime())
 
 
             pass
@@ -137,11 +137,11 @@ while 1:
 
     print
 
-    logging.info("Simulation resume")
-    logging.info("Profit count for earch pair")
+    logging.info("[ %s ] Simulation resume", datetime.now().ctime())
+    logging.info("[ %s ] Profit count for earch pair", datetime.now().ctime())
 
     for c in combinations:
-        str_ = "Times that profit occurs on pair " + c["pair"] + ": " + str(profitCount[c["id"]])
+        str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Times that profit occurs on pair " + c["pair"] + ": " + str(profitCount[c["id"]])
         logging.info(str_)
         pass
 
