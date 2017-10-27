@@ -47,9 +47,14 @@ class poloniex:
                 'Key': self.APIKey
             }
 
-            ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/tradingApi', post_data, headers))
-            jsonRet = json.loads(ret.read())
-            return self.post_process(jsonRet)
+            try:
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/tradingApi', post_data, headers))
+                jsonRet = json.loads(ret.read())
+                return self.post_process(jsonRet)
+            except urllib2.HTTPError, e:
+                print e.code
+                print e.read()
+                return self.post_process({})
 
 
     def returnTicker(self):
