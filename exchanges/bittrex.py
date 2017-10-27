@@ -116,6 +116,9 @@ class Bittrex (Exchange):
             long_pairs['LTC'] = 'BTC'
             long_pairs['ETH'] = 'BTC'
             long_pairs['XRP'] = 'BTC'
+            long_pairs['XMR'] = 'BTC'
+            long_pairs['DASH'] = 'BTC'
+            long_pairs['FCT'] = 'BTC'
 
             m_type["LONG"] = long_pairs
             m_type["SHORT"] = short_pairs

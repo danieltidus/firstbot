@@ -13,7 +13,7 @@ exchanges = {'Poloniex': fac.create('Poloniex'), 'Bittrex': fac.create('Bittrex'
 pp = pprint.PrettyPrinter(indent=4)
 
 
-
+print exchanges['Bittrex'].getLongShortPairs()
 
 # print "Get Balance long..."
 # balanceLong = exchanges['Bittrex'].getBalance('BTC')
