@@ -59,16 +59,47 @@ class Poloniex (Exchange):
             return {};
 
     def buy(self, currencyPair, price, amount):
-        return self.pol.buy(currencyPair, price, amount)
+        try:
+            return self.pol.buy(currencyPair, price, amount)['orderNumber']
+        except Exception, error:
+            print("[Poloniex] Error buying");
+            print str(error);
+            return -1;
 
     def sell(self, currencyPair, price, amount):
-        return self.pol.sell(currencyPair, price, amount)
+        try:
+            return self.pol.sell(currencyPair, price, amount)['orderNumber']
+        except Exception, error:
+            print("[Poloniex] Error selling");
+            print str(error);
+            return -1;
+
 
     def buyMargin(self, currencyPair, price, amount):
-        return self.pol.marginBuy(currencyPair, price, amount)
+        res = self.pol.marginBuy(currencyPair, price, amount)
+        try:
+            if res['success'] == 1
+                return res['orderNumber']
+            else:
+                print("[Poloniex] Error selling");
+                return -1
+        except Exception, error:
+            print("[Poloniex] Error margin buying");
+            print str(error);
+            return -1;
 
     def sellMargin(self, currencyPair, price, amount):
-        return self.pol. marginSell( currencyPair, price, amount)
+        res = self.pol. marginSell( currencyPair, price, amount)
+        try:
+            if res['success'] == 1
+                return res['orderNumber']
+            else:
+                print("[Poloniex] Error selling");
+                return -1
+        except Exception, error:
+            print("[Poloniex] Error margin selling");
+            print str(error);
+            return -1;
 
     #Return balance by currnency. Return -1 if a invalid currency is passed
     def getBalance(self, currency):
