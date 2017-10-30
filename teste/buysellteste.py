@@ -13,7 +13,11 @@ exchanges = {'Poloniex': fac.create('Poloniex'), 'Bittrex': fac.create('Bittrex'
 pp = pprint.PrettyPrinter(indent=4)
 
 
-print exchanges['Bittrex'].getLongShortPairs()
+#pp.pprint(exchanges['Poloniex'].getBid(COIN_PAIR))
+#pp.pprint(exchanges['Poloniex'].getAsk(COIN_PAIR))
+pp.pprint(exchanges['Poloniex'].getOrderBook(COIN_PAIR, 'both'))
+
+
 
 # print "Get Balance long..."
 # balanceLong = exchanges['Bittrex'].getBalance('BTC')

@@ -43,10 +43,6 @@ def findCombinations(exchanges={}):
 
 
 
-
-
-
-
 # Securely buy/sell an amount of coins based on lowest ask price of order book and an secure factor based on amount of coin available
 #Return order to be checked or -1 if some error
 def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPair, askPrice, bidPrice, btc_amount=0.02, secureFactor=2, spreadTarget=-0.0008):
@@ -124,7 +120,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
         return -1000
     pass
 
-    #Run operations in parallel
+    #Run operations in parallel  #TODO Verificar uma forma de gartantir que foi feita a compra, caso contrario retornar erro.
     #t_long = threading.Thread(target=exchangeLong.buy, args=(currencyPair, newAskPrice, btc_amount / newAskPrice) )
     #t_short = threading.Thread(target=exchangeLong.sellMargin, args=(currencyPair, newBidPrice, btc_amount / newBidPrice) )
 

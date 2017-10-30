@@ -39,14 +39,24 @@ class Poloniex (Exchange):
 
     #Return exchange fee. You must multiply by 100 to get fee in percentage
     def getFee(self):
-        return float(self.pol.returnFeeInfo()["takerFee"]);
+        try:
+            return float(self.pol.returnFeeInfo()["takerFee"]);
+        except Exception, error:
+            print("Error getting Ask");
+            print str(error);
+            return -1.0;
 
     def getOrderBook(self, currencyPair, type, depth=10):
-        data = self.pol.returnOrderBook(currencyPair)
-        asks = data['asks']
-        bids = data['bids']
-        firstPairs = {'asks': asks[:depth], 'bids': bids[:depth]}
-        return firstPairs[type]
+        try:
+            data = self.pol.returnOrderBook(currencyPair)
+            asks = data['asks']
+            bids = data['bids']
+            firstPairs = {'asks': asks[:depth], 'bids': bids[:depth]}
+            return firstPairs[type]
+        except Exception, error:
+            print("Error getting Order book");
+            print str(error);
+            return {};
 
     def buy(self, currencyPair, price, amount):
         return self.pol.buy(currencyPair, price, amount)

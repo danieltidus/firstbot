@@ -27,34 +27,37 @@ class poloniex:
 
     def api_query(self, command, req={}):
 
-        if(command == "returnTicker" or command == "return24Volume"):
-            ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command))
-            return json.loads(ret.read())
-        elif(command == "returnOrderBook"):
-            ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command + '&currencyPair=' + str(req['currencyPair'])))
-            return json.loads(ret.read())
-        elif(command == "returnMarketTradeHistory"):
-            ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + "returnTradeHistory" + '&currencyPair=' + str(req['currencyPair'])))
-            return json.loads(ret.read())
-        else:
-            req['command'] = command
-            req['nonce'] = int(time.time()*1000)
-            post_data = urllib.urlencode(req)
+        try:
+            if(command == "returnTicker" or command == "return24Volume"):
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command))
+                return json.loads(ret.read())
+            elif(command == "returnOrderBook"):
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command + '&currencyPair=' + str(req['currencyPair'])))
+                return json.loads(ret.read())
+            elif(command == "returnMarketTradeHistory"):
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + "returnTradeHistory" + '&currencyPair=' + str(req['currencyPair'])))
+                return json.loads(ret.read())
+            else:
+                req['command'] = command
+                req['nonce'] = int(time.time()*1000 + 200000000)
+                post_data = urllib.urlencode(req)
 
-            sign = hmac.new(self.Secret, post_data, hashlib.sha512).hexdigest()
-            headers = {
-                'Sign': sign,
-                'Key': self.APIKey
-            }
+                sign = hmac.new(self.Secret, post_data, hashlib.sha512).hexdigest()
+                headers = {
+                    'Sign': sign,
+                    'Key': self.APIKey
+                }
 
-            try:
+
                 ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/tradingApi', post_data, headers))
                 jsonRet = json.loads(ret.read())
                 return self.post_process(jsonRet)
-            except urllib2.HTTPError, e:
-                print e.code
-                print e.read()
-                return self.post_process({})
+
+
+        except urllib2.HTTPError, e:
+            print "Olaaa" + str(e.code)
+            print e.read()
+            return self.post_process({})
 
 
     def returnTicker(self):
@@ -158,4 +161,3 @@ class poloniex:
 
     def getMarginPosition(self, currencyPair):
         return self.api_query('getMarginPosition', {"currencyPair": currencyPair})
-
