@@ -114,11 +114,11 @@ while 1:
                 print "Splitting ..." + str_pair[0] + " " + str_pair[1]
 
 
-                balanceLongAltCoin = exchanges[c["LongEx"]].getBalance(str_pair[0])
-                balanceShortAltCoin = exchanges[c["ShortEx"]].getMarginBalance(str_pair[1])
+                balanceLongAltCoin = 0.02  #TODO: Descomentar aqui - exchanges[c["LongEx"]].getBalance(str_pair[1])
+                balanceShortAltCoin = 0.02 #TODO: Descomentar aqui - exchanges[c["ShortEx"]].getMarginBalance(str_pair[1])
                 print "balanceLongAltCoin: " + str(balanceLongAltCoin) + " balanceShortAltCoin: " + str(balanceShortAltCoin)
 
-                realSpread = secureOut(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLongAltCoin, balanceShortAltCoin, c["pair"], priceLong,
+                realSpread = botlib.secureOut(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLongAltCoin, balanceShortAltCoin, c["pair"], priceLong,
                           priceShort, 2, spreadExit[c["id"]])
 
                 if realSpread != -1000:
