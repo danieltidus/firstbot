@@ -78,7 +78,7 @@ class Poloniex (Exchange):
     def buyMargin(self, currencyPair, price, amount):
         res = self.pol.marginBuy(currencyPair, price, amount)
         try:
-            if res['success'] == 1
+            if res['success'] == 1:
                 return res['orderNumber']
             else:
                 print("[Poloniex] Error selling");
@@ -91,7 +91,7 @@ class Poloniex (Exchange):
     def sellMargin(self, currencyPair, price, amount):
         res = self.pol. marginSell( currencyPair, price, amount)
         try:
-            if res['success'] == 1
+            if res['success'] == 1:
                 return res['orderNumber']
             else:
                 print("[Poloniex] Error selling");
