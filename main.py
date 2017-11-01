@@ -81,7 +81,7 @@ while 1:
                 #TODO Inserting code to secure get inside the arbitrage
                 realSpread = botlib.secureIn(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLong, balanceShort, c["pair"],
                          priceLong, priceShort, 0.02, 2, spreadEntry)
-                if realSpread != -1000 or realSpread != -1001:
+                if realSpread != -1000 and realSpread != -1001:
                     logging.info("[ %s ] Everything ok! Arbitrage opportunity explored!", datetime.now().ctime())
                     spreadExit[c["id"]] = realSpread - spreadTarget - fees
 
