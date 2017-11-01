@@ -38,23 +38,30 @@ class Bittrex (Exchange):
     def buy(self, currencyPair, price, amount):
         str_pair = currencyPair.split('_')
         pair = str_pair[0] + "-" + str_pair[1]
-        response = self.bit.buy_limit(pair, amount, price)
-        if response['success'] == True:
-            return response['result']
-        else:
-            return -1
-
+        try:
+            response = self.bit.buy_limit(pair, amount, price)
+            if response['success'] == True:
+                return response['result']
+            else:
+                return -1
+        except Exception, error:
+            print("[Bittrex] Error margin buying");
+            print str(error);
+            return -1;
 
     def sell(self, currencyPair, price, amount ):
         str_pair = currencyPair.split('_')
         pair = str_pair[0] + "-" + str_pair[1]
-        response = self.bit.sell_limit(pair, amount, price)
-        if response['success'] == True:
-            return response['result']
-        else:
-            return -1
-
-
+        try:
+            response = self.bit.sell_limit(pair, amount, price)
+            if response['success'] == True:
+                return response['result']
+            else:
+                return -1
+        except Exception, error:
+            print("[Bittrex] Error margin buying");
+            print str(error);
+            return -1;
 
     def getBalance(self, currencyPair):
         msg = self.bit.get_balances()

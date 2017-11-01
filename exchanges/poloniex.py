@@ -14,15 +14,15 @@ class Poloniex (Exchange):
         try:
             return float(self.pol.returnTicker()[currencyPair]["highestBid"]);
         except Exception, error:
-            print("Error getting Bid");
-            print str(error);
+            print("Error getting Bid")
+            print str(error)
             return 0.0;
 
     def getAsk(self, currencyPair):
         try:
             return float(self.pol.returnTicker()[currencyPair]["lowestAsk"]);
         except Exception, error:
-            print("Error getting Ask");
+            print("Error getting Ask")
             print str(error);
             return 0.0;
 
@@ -30,19 +30,19 @@ class Poloniex (Exchange):
         try:
             return self.pol.returnTicker();
         except Exception, error:
-            print("Error accessing ticker!");
-            print str(error);
-            return {};
+            print("Error accessing ticker!")
+            print str(error)
+            return {}
 
     def tradableBalances(self):
-        return self.pol.returnTradableBalances();
+        return self.pol.returnTradableBalances()
 
     #Return exchange fee. You must multiply by 100 to get fee in percentage
     def getFee(self):
         try:
-            return float(self.pol.returnFeeInfo()["takerFee"]);
+            return float(self.pol.returnFeeInfo()["takerFee"])
         except Exception, error:
-            print("Error getting Ask");
+            print("Error getting Ask")
             print str(error);
             return -1.0;
 
@@ -54,25 +54,25 @@ class Poloniex (Exchange):
             firstPairs = {'asks': asks[:depth], 'bids': bids[:depth]}
             return firstPairs[type]
         except Exception, error:
-            print("Error getting Order book");
-            print str(error);
+            print("Error getting Order book")
+            print str(error)
             return {};
 
     def buy(self, currencyPair, price, amount):
         try:
             return self.pol.buy(currencyPair, price, amount)['orderNumber']
         except Exception, error:
-            print("[Poloniex] Error buying");
-            print str(error);
-            return -1;
+            print("[Poloniex] Error buying")
+            print str(error)
+            return -1
 
     def sell(self, currencyPair, price, amount):
         try:
             return self.pol.sell(currencyPair, price, amount)['orderNumber']
         except Exception, error:
-            print("[Poloniex] Error selling");
-            print str(error);
-            return -1;
+            print("[Poloniex] Error selling")
+            print str(error)
+            return -1
 
 
     def buyMargin(self, currencyPair, price, amount):

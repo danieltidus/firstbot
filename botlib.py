@@ -1,5 +1,6 @@
 import pprint
-import threading
+from multiprocessing.pool import ThreadPool
+from datetime import datetime
 
 # Receive a dict vector of exchanges and return a array of combinations
 def findCombinations(exchanges={}):
@@ -52,14 +53,14 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
         return -1000
 
 
-    print "secureIn::[" + str(currencyPair) + "] Balance on long exchange " + str(balanceLong)
-    print "secureIn::[" + str(currencyPair) + "] Balance on short exchange " + str(balanceShort)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Balance on long exchange " + str(balanceLong)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Balance on short exchange " + str(balanceShort)
     #No need balance available
     if balanceLong <= btc_amount or balanceShort <= btc_amount:
-        print "secureIn::[" + str(currencyPair) + "] No balance available. Verify long and short exchanges balance."
+        print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] No balance available. Verify long and short exchanges balance."
         return -1000
 
-    print "secureIn::[" + str(currencyPair) + "] Orderbook"
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Orderbook"
     orderBookLong = exchangeLong.getOrderBook(currencyPair, 'asks', 10)
     orderBookShort = exchangeShort.getOrderBook(currencyPair, 'bids', 10)
 
@@ -68,8 +69,8 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     print "Orderbook Short..."
     pp.pprint(orderBookShort)
 
-    print "secureIn::[" + str(currencyPair) + "] Ask Price: " + "{:.8f}".format(askPrice) + ". Secure factor: " + str(secureFactor) + "x"
-    print "secureIn::[" + str(currencyPair) + "] Bid Price: " + "{:.8f}".format(bidPrice) + ". Secure factor: " + str(secureFactor) + "x"
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Ask Price: " + "{:.8f}".format(askPrice) + ". Secure factor: " + str(secureFactor) + "x"
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Bid Price: " + "{:.8f}".format(bidPrice) + ". Secure factor: " + str(secureFactor) + "x"
 
     btc_volume_avaiable_long = 0  # Store the amount of available coins to buy converted in bitcoin
     btc_volume_avaiable_short = 0  # Store the amount of available coins to sell converted in bitcoin
@@ -94,43 +95,53 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
         pass
     pass
 
-    print "secureIn::[" + str(currencyPair) + "]  New Ask price " + str(newAskPrice)
-    print "secureIn::[" + str(currencyPair) + "]  New Bid price " + str(newBidPrice)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]  New Ask price " + str(newAskPrice)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]  New Bid price " + str(newBidPrice)
 
     #Verify if we have error with new prices
     if newAskPrice == 0.0 or newBidPrice == 0.0:
-        print "secureIn::[" + str(currencyPair) + "] Something wrong with order books. Stopping operations..."
+        print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Something wrong with order books. Stopping operations..."
         return -1000
     pass
 
-    print "secureIn::[" + str(currencyPair) + "]  BTC Amount available on Long " + str(btc_volume_avaiable_long)
-    print "secureIn::[" + str(currencyPair) + "]  BTC Amount available on short " + str(btc_volume_avaiable_short)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]  BTC Amount available on Long " + str(btc_volume_avaiable_long)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]  BTC Amount available on short " + str(btc_volume_avaiable_short)
     # Verify if we have errors with liquidity
     if btc_volume_avaiable_long < btc_amount*secureFactor or btc_volume_avaiable_short < btc_amount*secureFactor:
         print "secureIn::[" + str(currencyPair) + "] Not enough liquidity. Stopping operations..."
         return -1000
     pass
 
-    print "secureIn::[" + str(currencyPair) + "]  Current Spread " + str(spreadTarget)
-    print "secureIn::[" + str(currencyPair) + "]  New Spread " +  "{:.8f}".format(((newBidPrice - newAskPrice)/newAskPrice))
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]  Current Spread " + str(spreadTarget)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]  New Spread " +  "{:.8f}".format(((newBidPrice - newAskPrice)/newAskPrice))
 
     # Verify if we have error with spreadTarget
     if spreadTarget > ((newBidPrice - newAskPrice)/newAskPrice):
-        print "secureIn::[" + str(currencyPair) + "] Invalid new spread. We lost the opportunity. Stopping operations..."
+        print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Invalid new spread. We lost the opportunity. Stopping operations..."
         return -1000
     pass
 
-    #Run operations in parallel  #TODO Verificar uma forma de gartantir que foi feita a compra, caso contrario retornar erro.
-    #t_long = threading.Thread(target=exchangeLong.buy, args=(currencyPair, newAskPrice, btc_amount / newAskPrice) )
-    #t_short = threading.Thread(target=exchangeLong.sellMargin, args=(currencyPair, newBidPrice, btc_amount / newBidPrice) )
+    pool = ThreadPool(processes=2)
 
-    #Wait operations to be concluded
-    #t_long.join()
-    #t_short.join()
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Calling buy thread on long operation..."
+    async_result_long = pool.apply_async(exchangeLong.buy, (currencyPair, newAskPrice, btc_amount / newAskPrice)) # tuple of args for foo
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Calling buy thread on short operation..."
+    async_result_short = pool.apply_async(exchangeLong.sellMargin, (currencyPair, newBidPrice, btc_amount / newBidPrice)) # tuple of args for foo
 
-    print "secureIn::[" + str(currencyPair) + "] Buy/Sell orders registered..."
 
-    return ((newBidPrice - newAskPrice)/newAskPrice)
+    print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Waiting operations to be completed..."
+
+
+    order_long = async_result_long.get()  # get the return value from your function.
+    order_short = async_result_short.get()  # get the return value from your function.
+
+    if order_long == -1 or order_short == -1:
+        print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Problem on buy/sell operation. Buy order is: " + str(order_long) + ". Sell order is: " + str(order_short) +"."
+        #TODO: Revert operations that occurred and the other one not.
+        return -1000
+    else:
+        print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Buy/Sell orders registered..."
+        return ((newBidPrice - newAskPrice)/newAskPrice)
 
 
 

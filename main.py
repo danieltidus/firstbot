@@ -84,9 +84,16 @@ while 1:
                 if realSpread != -1000:
                     logging.info("[ %s ] Everything ok! Arbitrage opportunity explored!", datetime.now().ctime())
                     spreadExit[c["id"]] = realSpread - spreadTarget - fees
+
+                    #TODO: remove
+                    print "Exiting .... deu certo!"
+                    exit()
                 else:
                     logging.info(" [ %s ] Arbitrage opportunity not explored", datetime.now().ctime())
 
+                    #TODO: remove
+                    print "Exiting .... deu merda!"
+                    exit()
 
 
             pass
