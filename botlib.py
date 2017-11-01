@@ -138,7 +138,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     if order_long == -1 or order_short == -1:
         print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Problem on buy/sell operation. Buy order is: " + str(order_long) + ". Sell order is: " + str(order_short) +"."
         #TODO: Revert operations that occurred and the other one not.
-        return -1000
+        return -1001
     else:
         print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Buy/Sell orders registered..."
         return ((newBidPrice - newAskPrice)/newAskPrice)

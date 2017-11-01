@@ -89,11 +89,12 @@ while 1:
                     print "Exiting .... deu certo!"
                     exit()
                 else:
-                    logging.info(" [ %s ] Arbitrage opportunity not explored", datetime.now().ctime())
-
-                    #TODO: remove
-                    print "Exiting .... deu merda!"
-                    exit()
+                    if realSpread != -1001
+                        logging.info(" [ %s ] Arbitrage opportunity not explored", datetime.now().ctime())
+                    else:
+                        #TODO: remove
+                        print "Exiting .... deu merda!"
+                        exit()
 
 
             pass
