@@ -89,7 +89,7 @@ while 1:
                     print "Exiting .... deu certo!"
                     exit()
                 else:
-                    if realSpread != -1001
+                    if realSpread != -1001:
                         logging.info(" [ %s ] Arbitrage opportunity not explored", datetime.now().ctime())
                     else:
                         #TODO: remove
