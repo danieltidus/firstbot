@@ -126,7 +126,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Calling buy thread on long operation..."
     async_result_long = pool.apply_async(exchangeLong.buy, (currencyPair, newAskPrice, btc_amount / newAskPrice)) # tuple of args for foo
     print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Calling buy thread on short operation..."
-    async_result_short = pool.apply_async(exchangeLong.sellMargin, (currencyPair, newBidPrice, btc_amount / newBidPrice)) # tuple of args for foo
+    async_result_short = pool.apply_async(exchangeShort.sellMargin, (currencyPair, newBidPrice, btc_amount / newBidPrice)) # tuple of args for foo
 
 
     print "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Waiting operations to be completed..."
