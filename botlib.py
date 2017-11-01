@@ -146,9 +146,6 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
 
 
 
-
-
-
 # Securely buy/sell an amount of coins based on lowest ask price of order book and an secure factor based on amount of coin available
 #Return order to be checked or -1 if some error
 def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCoin, currencyPair, longPrice, shortPrice, secureFactor=2, spreadTarget=-0.0008):

@@ -5,7 +5,7 @@ import botlib
 import pprint
 import time
 
-COIN_PAIR = 'BTC_MAID'
+COIN_PAIR = 'BTC_LTC'
 fac = ExchangeFactory()
 
 exchanges = {'Poloniex': fac.create('Poloniex'), 'Bittrex': fac.create('Bittrex')}
@@ -15,7 +15,9 @@ pp = pprint.PrettyPrinter(indent=4)
 
 #pp.pprint(exchanges['Poloniex'].getBid(COIN_PAIR))
 #pp.pprint(exchanges['Poloniex'].getAsk(COIN_PAIR))
-pp.pprint(exchanges['Poloniex'].getOrderBook(COIN_PAIR, 'both'))
+#pp.pprint(exchanges['Poloniex'].sellMargin(COIN_PAIR, 0.00832952,2))
+pp.pprint(exchanges['Poloniex'].getMarginBalance('LTC'))
+
 
 
 
