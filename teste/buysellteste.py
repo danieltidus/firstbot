@@ -6,6 +6,8 @@ import pprint
 import time
 
 COIN_PAIR = 'BTC_LTC'
+#ORDER_NUMBER =119863928138
+ORDER_NUMBER ='345584f3-5ff0-43c2-a65c-acd3b3fcc10a'
 fac = ExchangeFactory()
 
 exchanges = {'Poloniex': fac.create('Poloniex'), 'Bittrex': fac.create('Bittrex')}
@@ -15,9 +17,10 @@ pp = pprint.PrettyPrinter(indent=4)
 
 #pp.pprint(exchanges['Poloniex'].getBid(COIN_PAIR))
 #pp.pprint(exchanges['Poloniex'].getAsk(COIN_PAIR))
-#pp.pprint(exchanges['Poloniex'].sellMargin(COIN_PAIR, 0.00832952,2))
-pp.pprint(exchanges['Poloniex'].getMarginBalance('LTC'))
 
+#UUID = exchanges['Bittrex'].sell(COIN_PAIR, 0.00760704,2)
+#pp.pprint(UUID)
+pp.pprint(exchanges['Bittrex'].getOrderBTCValue(ORDER_NUMBER))
 
 
 

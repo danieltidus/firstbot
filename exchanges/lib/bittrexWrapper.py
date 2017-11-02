@@ -21,7 +21,7 @@ BASE_URL = 'https://bittrex.com/api/v1.1/%s/'
 
 MARKET_SET = {'getopenorders', 'cancel', 'sellmarket', 'selllimit', 'buymarket', 'buylimit'}
 
-ACCOUNT_SET = {'getbalances', 'getbalance', 'getdepositaddress', 'withdraw', 'getorderhistory'}
+ACCOUNT_SET = {'getbalances', 'getbalance', 'getdepositaddress', 'withdraw', 'getorderhistory', 'getorder'}
 
 
 class bittrex(object):
@@ -66,6 +66,9 @@ class bittrex(object):
             request_url,
             headers={"apisign": hmac.new(self.api_secret.encode(), request_url.encode(), hashlib.sha512).hexdigest()}
         ).json()
+
+    def get_order(self, uuid):
+        return self.api_query('getorder', {'uuid': uuid})
 
     def get_markets(self):
         """

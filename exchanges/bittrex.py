@@ -45,9 +45,9 @@ class Bittrex (Exchange):
             else:
                 return -1
         except Exception, error:
-            print("[Bittrex] Error margin buying");
-            print str(error);
-            return -1;
+            print("[Bittrex] Error margin buying")
+            print str(error)
+            return -1
 
     def sell(self, currencyPair, price, amount ):
         str_pair = currencyPair.split('_')
@@ -85,6 +85,19 @@ class Bittrex (Exchange):
             return response['result']
         else:
             return None
+
+    def getOrderBTCValue(self, orderNumber):
+        try:
+            order = self.bit.get_order(orderNumber)
+            if order['result']['QuantityRemaining'] == 0.0:
+                return order['result']['Price']
+            else:
+                print("[Bittrex] Error getting btc value of an order! Order still processing")
+                return -1
+        except Exception, error:
+            print("[Bittrex] Error getting btc value of an order!")
+            print str(error)
+            return -1
 
     def getOrderBook(self, currencyPair, type, depth=10):
         str_pair = currencyPair.split('_')

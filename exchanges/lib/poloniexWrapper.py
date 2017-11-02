@@ -55,7 +55,7 @@ class poloniex:
 
 
         except urllib2.HTTPError, e:
-            print "Olaaa" + str(e.code)
+            print "Error code: " + str(e.code)
             print e.read()
             return self.post_process({})
 
@@ -161,3 +161,6 @@ class poloniex:
 
     def getMarginPosition(self, currencyPair):
         return self.api_query('getMarginPosition', {"currencyPair": currencyPair})
+
+    def returnOrderTrades(self, orderNumber):
+        return self.api_query('returnOrderTrades', {"orderNumber": orderNumber})

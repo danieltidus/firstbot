@@ -1,3 +1,5 @@
+import math
+
 from exchange import Exchange;
 from lib.poloniexWrapper import poloniex;
 
@@ -103,12 +105,24 @@ class Poloniex (Exchange):
 
     def getMarginBalance(self, currencyPair):
         try:
-            return float(self.pol.getMarginPosition(currencyPair)['amount'])
+            return math.fabs(float(self.pol.getMarginPosition(currencyPair)['amount']))
         except KeyError as e:
             print "KeyError: " + str(e)
 
     def returnOpenOrders(self, currencyPair):
         return self.pol.returnOpenOrders(currencyPair)
+
+    def getOrderBTCValue(self, orderNumber):
+        try:
+            orders = self.pol.returnOrderTrades(orderNumber)
+            total = 0
+            for order in orders:
+                total += float(order['total'])
+            return total
+        except Exception, error:
+            print("[Poloniex] Error getting btc value of an order!")
+            print str(error)
+            return -1
 
     #Creating long and shorts sets of pairs.
     def getLongShortPairs(self):

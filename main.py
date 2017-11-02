@@ -1,11 +1,11 @@
 import json
 import pprint
-import botlib;
-import time;
-import timeit;
+import botlib
+import time
+import timeit
 from datetime import datetime
-import math;
-import logging;
+import math
+import logging
 from exchanges.exchangefactory import ExchangeFactory
 
 
@@ -20,6 +20,8 @@ exchanges['Bittrex'] = fac.create('Bittrex')
 spreadEntry=0.0010
 spreadTarget=0.0010
 simulationTime = 10.0 #simulation time in seconds
+btc_amount = 0.01
+orderBookFactor = 2
 #########################
 
 spreadExit = []
@@ -80,24 +82,20 @@ while 1:
 
                 #TODO Inserting code to secure get inside the arbitrage
                 realSpread = botlib.secureIn(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLong, balanceShort, c["pair"],
-                         priceLong, priceShort, 0.02, 2, spreadEntry)
+                         priceLong, priceShort, btc_amount, orderBookFactor, spreadEntry)
                 if realSpread != -1000 and realSpread != -1001:
                     logging.info("[ %s ] Everything ok! Arbitrage opportunity explored!", datetime.now().ctime())
                     spreadExit[c["id"]] = realSpread - spreadTarget - fees
-
-                    #TODO: remove
-                    print "Exiting .... deu certo!"
-                    exit()
                 else:
-                    if realSpread != -1001:
-                        logging.info(" [ %s ] Arbitrage opportunity not explored", datetime.now().ctime())
+                    if realSpread == -1001:
+                        logging.info(" [ %s ] Arbitrage opportunity not explored. Some problem on buy/sell operations. you should revert (TODO)!", datetime.now().ctime())
                     else:
-                        #TODO: remove
-                        print "Exiting .... deu merda!"
-                        exit()
-
-
+                        logging.info(" [ %s ] Arbitrage opportunity not explored.", datetime.now().ctime())
             pass
+
+
+
+
         else: #Looking exit opportunities
 
             priceLong = exchanges[c["LongEx"]].getBid(c["pair"])
@@ -122,14 +120,14 @@ while 1:
                 print "Splitting ..." + str_pair[0] + " " + str_pair[1]
 
 
-                balanceLongAltCoin = 0.02  #TODO: Descomentar aqui - exchanges[c["LongEx"]].getBalance(str_pair[1])
-                balanceShortAltCoin = 0.02 #TODO: Descomentar aqui - exchanges[c["ShortEx"]].getMarginBalance(str_pair[1])
+                balanceLongAltCoin = exchanges[c["LongEx"]].getBalance(str_pair[1])
+                balanceShortAltCoin = exchanges[c["ShortEx"]].getMarginBalance(c["pair"])
                 print "balanceLongAltCoin: " + str(balanceLongAltCoin) + " balanceShortAltCoin: " + str(balanceShortAltCoin)
 
                 realSpread = botlib.secureOut(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLongAltCoin, balanceShortAltCoin, c["pair"], priceLong,
-                          priceShort, 2, spreadExit[c["id"]])
+                          priceShort, orderBookFactor, spreadExit[c["id"]])
 
-                if realSpread != -1000:
+                if realSpread != -1000 and realSpread != -1001:
                     logging.info(" [ %s ] Everything ok! Arbitrage opportunity completed. Probably we make profit!", datetime.now().ctime())
                     # INFO here are log info. Maybe remove this after
                     str_ = "[ " + str(datetime.now().ctime()) + " ] " + "We made " + str(spreadTarget * 100) + "% of profit!"
@@ -137,7 +135,12 @@ while 1:
                     spreadExit.pop(c["id"])
                     profitCount[c["id"]] = profitCount[c["id"]] + 1
                 else:
-                    logging.info(" [ %s ] Arbitrage opportunity to exit not explored", datetime.now().ctime())
+                    if realSpread == -1001:
+                        logging.info(
+                            " [ %s ] Arbitrage opportunity not explored. Some problem on buy/sell operations. you should revert (TODO)!",
+                            datetime.now().ctime())
+                    else:
+                        logging.info(" [ %s ] Arbitrage exit opportunity not explored.", datetime.now().ctime())
 
 
             pass
