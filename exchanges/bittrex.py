@@ -59,23 +59,24 @@ class Bittrex (Exchange):
             else:
                 return -1
         except Exception, error:
-            print("[Bittrex] Error margin buying");
-            print str(error);
-            return -1;
+            print("[Bittrex] Error margin buying")
+            print str(error)
+            return -1
 
     def getBalance(self, currencyPair):
-        msg = self.bit.get_balances()
-        if msg['success'] == True:
-            list = msg['result']
-            for l in list:
-                if l['Currency'] == currencyPair:
-                    return l['Balance']
-        return -1
-        # try:
-        #     return  float(self.bit.get_balances()[currency])
-        # except KeyError as e:
-        #     print "KeyError: " + str(e)
-        #     return -1
+        try:
+            msg = self.bit.get_balances()
+            if msg['success'] == True:
+                list = msg['result']
+                for l in list:
+                    if l['Currency'] == currencyPair:
+                        return l['Balance']
+            return -1
+        except Exception, error:
+            print("[Bittrex] Error getting balance!")
+            print str(error)
+            return -1
+
 
     def returnOpenOrders(self, currencyPair):
         str_pair = currencyPair.split('_')
