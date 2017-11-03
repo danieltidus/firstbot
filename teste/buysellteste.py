@@ -20,7 +20,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 #UUID = exchanges['Bittrex'].sell(COIN_PAIR, 0.00760704,2)
 #pp.pprint(UUID)
-pp.pprint(exchanges['Bittrex'].getOrderBTCValue(ORDER_NUMBER))
+pp.pprint(exchanges['Poloniex'].getBalance('BTC'))
 
 
 
