@@ -5,9 +5,9 @@ import time
 import timeit
 from datetime import datetime
 import math
-import logging
 from exchanges.exchangefactory import ExchangeFactory
-
+import utils
+import logging
 
 fac = ExchangeFactory()
 
@@ -43,10 +43,12 @@ for c in combinations:
 print profitCount
 
 str_ = "log_" + datetime.now().strftime("%Y%m%d%H%M%S")
-logging.basicConfig(filename=str_, format='%(levelname)s:%(message)s', level=logging.INFO)
-logging.info("Start simulation at %s", datetime.now().ctime())
-logging.info("")
-logging.info("")
+formatter = logging.Formatter('%(levelname)s:%(message)s')
+logger = utils.setup_logger('main_logger', str_, formatter)
+#logging.basicConfig(filename=str_, format='%(levelname)s:%(message)s', level=logging.INFO)
+logger.info("Start simulation at %s", datetime.now().ctime())
+logger.info("")
+logger.info("")
 
 while 1:
     start = timeit.default_timer()
@@ -73,9 +75,9 @@ while 1:
             pass
 
             str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Spread in for pair " + c["pair"] + " is " + str(round(spread[c["id"]]*100,2)) + " %"
-            logging.info(str_)
+            logger.info(str_)
             if spread[c["id"]] >= spreadEntry: #TODO chekEntry-like process checkEntry(c["id"], priceLong, princeShort, spread, spreadEntry)
-                logging.info("[ %s ] We found a arbitrage opportunity", datetime.now().ctime())
+                logger.info("[ %s ] We found a arbitrage opportunity", datetime.now().ctime())
 
 
 
@@ -84,13 +86,13 @@ while 1:
                 realSpread = botlib.secureIn(exchanges[c["LongEx"]], exchanges[c["ShortEx"]], balanceLong, balanceShort, c["pair"],
                          priceLong, priceShort, btc_amount, orderBookFactor, spreadEntry)
                 if realSpread != -1000 and realSpread != -1001:
-                    logging.info("[ %s ] Everything ok! Arbitrage opportunity explored!", datetime.now().ctime())
+                    logger.info("[ %s ] Everything ok! Arbitrage opportunity explored!", datetime.now().ctime())
                     spreadExit[c["id"]] = realSpread - spreadTarget - fees
                 else:
                     if realSpread == -1001:
-                        logging.info(" [ %s ] Arbitrage opportunity not explored. Some problem on buy/sell operations. you should revert (TODO)!", datetime.now().ctime())
+                        logger.info(" [ %s ] Arbitrage opportunity not explored. Some problem on buy/sell operations. you should revert (TODO)!", datetime.now().ctime())
                     else:
-                        logging.info(" [ %s ] Arbitrage opportunity not explored.", datetime.now().ctime())
+                        logger.info(" [ %s ] Arbitrage opportunity not explored.", datetime.now().ctime())
             pass
 
 
@@ -108,12 +110,12 @@ while 1:
             pass
 
             str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Pair " + c["pair"] + " with LongEx " + c["LongEx"] + " and ShortEx " + c["ShortEx"] + " ON Market"
-            logging.info(str_)
+            logger.info(str_)
             str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Current spread " + str(round(spread[c["id"]]*100,2)) + " and target spread to exit " + str(round(spreadExit[c["id"]]*100,2))
-            logging.info(str_)
+            logger.info(str_)
             if spread[c["id"]] <= spreadExit[c["id"]]: #TODO checkExit-like process
                 str_ = "[ " + str(datetime.now().ctime()) + " ] " + "We found a exit opportunity for pair " + c["pair"]
-                logging.info(str_)
+                logger.info(str_)
 
                 # TODO Code to sell the asset e possible made profit;
                 str_pair = c["pair"].split('_')
@@ -128,33 +130,33 @@ while 1:
                           priceShort, orderBookFactor, spreadExit[c["id"]])
 
                 if realSpread != -1000 and realSpread != -1001:
-                    logging.info(" [ %s ] Everything ok! Arbitrage opportunity completed. Probably we make profit!", datetime.now().ctime())
+                    logger.info(" [ %s ] Everything ok! Arbitrage opportunity completed. Probably we make profit!", datetime.now().ctime())
                     # INFO here are log info. Maybe remove this after
                     str_ = "[ " + str(datetime.now().ctime()) + " ] " + "We made " + str(spreadTarget * 100) + "% of profit!"
-                    logging.info(str_)
+                    logger.info(str_)
                     spreadExit.pop(c["id"])
                     profitCount[c["id"]] = profitCount[c["id"]] + 1
                 else:
                     if realSpread == -1001:
-                        logging.info(
+                        logger.info(
                             " [ %s ] Arbitrage opportunity not explored. Some problem on buy/sell operations. you should revert (TODO)!",
                             datetime.now().ctime())
                     else:
-                        logging.info(" [ %s ] Arbitrage exit opportunity not explored.", datetime.now().ctime())
+                        logger.info(" [ %s ] Arbitrage exit opportunity not explored.", datetime.now().ctime())
 
 
             pass
     pass
 
-    logging.info("[ %s ] Simulation resume", datetime.now().ctime())
-    logging.info("[ %s ] Profit count for earch pair", datetime.now().ctime())
+    logger.info("[ %s ] Simulation resume", datetime.now().ctime())
+    logger.info("[ %s ] Profit count for earch pair", datetime.now().ctime())
 
     for c in combinations:
         str_ = "[ " + str(datetime.now().ctime()) + " ] " + "Times that profit occurs on pair " + c["pair"] + ": " + str(profitCount[c["id"]])
-        logging.info(str_)
+        logger.info(str_)
         pass
 
-    logging.info("\n")
+    logger.info("\n")
 
     stop =  timeit.default_timer()
     time.sleep(math.fabs(simulationTime - round(stop - start)))
