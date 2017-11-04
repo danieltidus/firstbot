@@ -124,6 +124,31 @@ class Poloniex (Exchange):
             print str(error)
             return -1
 
+    def closeMarginPosition(self, currencyPair):
+        try:
+            orders = self.returnOpenOrders(currencyPair)
+            print "[Poloniex] Procurando ordens abertas para cancelar"
+            for order in orders:
+                res = self.pol.cancel(currencyPair, order['orderNumber'])
+                if res['success'] == 1:
+                    print "Ordem " + str(order['orderNumber']) + " cancelada com sucesso!"
+                else:
+                    print "Erro encerrando ordem " + str(order['orderNumber'])
+                    return -1
+
+            print "[Poloniex] Fechando posicoes abertas para moeda..."
+            res = self.pol.closeMarginPosition(currencyPair)
+            if res['success'] == 1:
+                print "Posicoes fechadas com sucesso: Trace:  " + str(res['resultingTrades'])
+                return 0
+            else:
+                print "Problemas encerrando posicoes na Poloniex para par " + str(currencyPair)
+                return -1
+        except Exception, error:
+            print("[Poloniex] Error closing margin position!")
+            print str(error)
+            return -1
+
     #Creating long and shorts sets of pairs.
     def getLongShortPairs(self):
         long_pairs = {}

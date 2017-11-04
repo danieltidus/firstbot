@@ -1,3 +1,4 @@
+import time
 from exchange import Exchange
 from lib.bittrexWrapper import bittrex
 
@@ -63,14 +64,16 @@ class Bittrex (Exchange):
             print str(error)
             return -1
 
-    def getBalance(self, currencyPair):
+    def getBalance(self, currency):
         try:
-            msg = self.bit.get_balances()
+            msg = self.bit.get_balance(currency)
             if msg['success'] == True:
-                list = msg['result']
-                for l in list:
-                    if l['Currency'] == currencyPair:
-                        return l['Balance']
+                l = msg['result']
+                if l['Currency'] == currency:
+                    if l['Balance'] != None:
+                        return float(l['Balance'])
+                    else:
+                        return 0.0
             return -1
         except Exception, error:
             print("[Bittrex] Error getting balance!")
@@ -118,6 +121,78 @@ class Bittrex (Exchange):
         else:
             return None
         pass
+
+
+    def closeAllPositions(self, currencyPair):
+        #Cancelar ordem se for uma ordem em aberto
+        str_pair = currencyPair.split('_')
+        pair = str_pair[0] + "-" + str_pair[1]
+        try:
+            print "Tentando procurar a ordem no livro de ordens abertas..."
+            res = self.bit.get_open_orders(pair)['result']
+            for r in res:
+                print "Achei ordem aberta, vou cancelar..."
+                res = self.bit.cancel(r['OrderUuid'])
+                if res['success'] ==  True:
+                    print "Ordem " + str(r['OrderUuid']) + " cancelada com sucesso!"
+                else:
+                    print "Erro no cancelamento da ordem" + str(r['OrderUuid'])
+                    return -1
+
+            print "Transformar tudo que tiver dessa alt em btc"
+            amount = self.getBalance(str_pair[1])
+
+            if amount != 0:
+                if amount != -1:
+                    orderBookLong = self.getOrderBook(currencyPair, 'bids', 20)
+
+                    altcoin_volume_avaiable_long = 0
+                    newLongPrice = 0.0
+                    # Calculating liquidity in each book
+                    for x in orderBookLong:
+                        altcoin_volume_avaiable_long += float(x[1])
+                        newLongPrice = float(x[0])
+                        if altcoin_volume_avaiable_long >= amount * 2.5:
+                            break
+                        pass
+                    pass
+
+                    if newLongPrice == 0.0:
+                        print "Problemas no livro de ordens..."
+                        return -1
+
+                    order = self.sell(currencyPair, newLongPrice, amount)
+
+                    if order != -1:
+                        res = self.bit.get_order(order)
+                        while res['result']['IsOpen'] == True:
+                            print "Ordem esta cadastrada mas nao concluida, vamos esperar...Slippage??????"
+                            time.sleep(3)
+                        pass
+                        print "Reversao concluida com sucesso"
+                        return 0
+                    else:
+                        print "Problemas fechando a posicao. Ferrou!!!!!"
+                        return -1
+                else:
+                    print "Erro acessando balanco"
+                    return -1
+            else:
+                print "Sem balanco, vou encerrar!"
+                return 0
+            pass
+        except Exception, error:
+            print("[Bittrex] Error closing position!")
+            print str(error)
+            return -1
+
+
+
+        #Se ja tiver sido executada, executar o reverso
+        pass
+
+
+
 
     #Creating long and shorts sets of pairs.
     def getLongShortPairs(self):

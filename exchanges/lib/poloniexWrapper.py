@@ -164,3 +164,6 @@ class poloniex:
 
     def returnOrderTrades(self, orderNumber):
         return self.api_query('returnOrderTrades', {"orderNumber": orderNumber})
+
+    def closeMarginPosition(self, currencyPair):
+        return self.api_query('closeMarginPosition',  {"currencyPair":currencyPair,})
