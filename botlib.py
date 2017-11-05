@@ -78,10 +78,12 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
 
     st_ = "Orderbook Long..."
     logger.info(st_)
-    pp.pprint(orderBookLong)
+    logger.info(orderBookLong)
+    #pp.pprint(orderBookLong)
     st_ = "Orderbook Short..."
     logger.info(st_)
-    pp.pprint(orderBookShort)
+    logger.info(orderBookShort)
+    #pp.pprint(orderBookShort)
 
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
         currencyPair) + "] Ask Price: " + "{:.8f}".format(askPrice) + ". Secure factor: " + str(secureFactor) + "x"
@@ -187,37 +189,63 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     altcoin = currencyPair.split('_')[1]
 
     altlong = exchangeLong.getBalance(altcoin)
-    altshort = exchangeShort.getMarginBalance(altcoin)
+    altshort = exchangeShort.getMarginBalance(currencyPair)
+
 
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-        currencyPair) + "] Altcoin balance on long " + str(altlong) + "Alcoin balance on short " + str(altshort)
+        currencyPair) + "] Altcoin balance on long " + str(altlong) + " Altcoin balance on short " + str(altshort)
     logger.info(st_)
 
-    if order_long == -1 or order_short == -1 or altlong <= 0.0 or altshort <= 0.0:
-        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-            currencyPair) + "] Problem on buy/sell operation. Buy order is: " + str(
-            order_long) + ". Sell order is: " + str(order_short) + "."
-        logger.info(st_)
-        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-            currencyPair) + "] Closing short positions..."
-        logger.info(st_)
-        res = exchangeShort.closeMarginPosition(currencyPair)
-        if res == -1:
-            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                currencyPair) + "] Warning if alt balances different of zero, otherwise calm down! Reverting short operation. Houston, we have a problem!"
-            logger.info(st_)
 
-        res = exchangeLong.closeAllPositions(currencyPair)
-        if res == -1:
-            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                currencyPair) + "] Warning if alt balances different of zero, otherwise calm down! Reverting long operation. Houston, we have a problem!"
-            logger.info(st_)
-
-        return -1000
-    else:
-        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Buy/Sell orders registered..."
+    if order_long == -1 or order_short == -1:
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+            currencyPair) + "] Problem buying/selling Status order long " + str(order_long) + " Status order " + str(order_short)
         logger.info(st_)
-        return ((newBidPrice - newAskPrice) / newAskPrice)
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+            currencyPair) + "] Stopping bot, sorry! :'("
+        logger.info(st_)
+        exit(-1)
+
+    complete = False
+    while complete == False:
+        openLong = exchangeLong.hasOpenOrder(currencyPair)
+        openShort = exchangeShort.hasOpenOrder(currencyPair)
+        if openLong == True or openShort == True:
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                currencyPair) + "] Uncompleted orders, waiting... (Sleppage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
+            logger.info(st_)
+            time.sleep(2)
+        else:
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                currencyPair) + "] Orders completed!!!!"
+            logger.info(st_)
+            complete = True
+
+    # if order_long == -1 or order_short == -1 or altlong <= 0.0 or altshort <= 0.0:
+    #     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #         currencyPair) + "] Problem on buy/sell operation. Buy order is: " + str(
+    #         order_long) + ". Sell order is: " + str(order_short) + "."
+    #     logger.info(st_)
+    #     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #         currencyPair) + "] Closing short positions..."
+    #     logger.info(st_)
+    #     res = exchangeShort.closeMarginPosition(currencyPair)
+    #     if res == -1:
+    #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #             currencyPair) + "] Warning if alt balances different of zero, otherwise calm down! Reverting short operation. Houston, we have a problem!"
+    #         logger.info(st_)
+    #
+    #     res = exchangeLong.closeAllPositions(currencyPair)
+    #     if res == -1:
+    #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #             currencyPair) + "] Warning if alt balances different of zero, otherwise calm down! Reverting long operation. Houston, we have a problem!"
+    #         logger.info(st_)
+    #
+    #     return -1000
+    # else:
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Buy/Sell orders ok..."
+    logger.info(st_)
+    return ((newBidPrice - newAskPrice) / newAskPrice)
 
 
 # Securely buy/sell an amount of coins based on lowest ask price of order book and an secure factor based on amount of coin available
@@ -250,10 +278,12 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
 
     st_ = "Orderbook Long..."
     logger.info(st_)
-    pp.pprint(orderBookLong)
+    logger.info(orderBookLong)
+    # pp.pprint(orderBookLong)
     st_ = "Orderbook Short..."
     logger.info(st_)
-    pp.pprint(orderBookShort)
+    logger.info(orderBookShort)
+    # pp.pprint(orderBookShort)
 
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
         currencyPair) + "] Long Price: " + "{:.8f}".format(longPrice) + ". Secure factor: " + str(secureFactor) + "x"
@@ -349,71 +379,114 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     order_long = async_result_long.get()  # get the return value from your function.
     order_short = async_result_short.get()  # get the return value from your function.
 
-    ok = False
-    if order_long != -1 and order_short != -1:
-        ok = True
 
-    count = 1
-    while ok == False:
-        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
-            currencyPair) + "] Problem selling/buying. Trying again... Attempt #" + str(count)
-        logger.info(st_)
-
-        if order_long == -1:
-            order_long = exchangeLong.sell(currencyPair, newLongPrice, balanceLongAltCoin)
-        if order_short == -1:
-            order_short = exchangeShort.buyMargin(currencyPair, newShortPrice, balanceShortAltCoin)
-        if order_long != -1 and order_short != -1:
-            ok = True
-        time.sleep(1)
-        count = count + 1
-    pass
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+        currencyPair) + "] Waiting more to ensure order complete...."
+    logger.info(st_)
+    time.sleep(5)
 
     altcoin = currencyPair.split('_')[1]
 
     altlong = exchangeLong.getBalance(altcoin)
-    altshort = exchangeShort.getMarginBalance(altcoin)
-    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    altshort = exchangeShort.getMarginBalance(currencyPair)
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
         currencyPair) + "] Altcoin balance on long " + str(altlong) + "Alcoin balance on short " + str(altshort)
     logger.info(st_)
 
-    if altlong != 0.0:
-        if altlong != -1:
-            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                currencyPair) + "] Problems on long so trying to complete operation"
-            logger.info(st_)
-            res = exchangeLong.closeAllPositions(currencyPair)
-            if res == -1:
-                st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                    currencyPair) + "] FATAL ERROR completing operation. Houston, we have a problem!"
-                logger.info(st_)
-            pass
-        else:
-            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                currencyPair) + "] Error accessing altcoin balance on long"
 
-    if altshort != 0.0:
-        if altshort != -1:
-            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                currencyPair) + "] Problems on short so trying to complete operation"
-            logger.info(st_)
-            res = exchangeShort.closeMarginPosition(currencyPair)
-            if res == -1:
-                st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                    currencyPair) + "] FATAL ERROR completing operation. Houston, we have a problem!"
-                logger.info(st_)
-            pass
-        else:
-            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                currencyPair) + "] Error accessing altcoin balance on short"
-
+    if order_long == -1 or order_short == -1:
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
-            currencyPair) + "] Sell/BuyMargin orders registered..."
+            currencyPair) + "] Problem buying/selling Status order long " + str(order_long) + " Status order " + str(order_short)
         logger.info(st_)
-        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on LongEx: " + str(
-            exchangeLong.getOrderBTCValue(order_long))
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+            currencyPair) + "] Stopping bot, sorry! :'("
         logger.info(st_)
-        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on ShortEx: " + str(
-            exchangeShort.getOrderBTCValue(order_short))
+        exit(-1)
+
+    complete = False
+    while complete == False:
+        openLong = exchangeLong.hasOpenOrder(currencyPair)
+        openShort = exchangeShort.hasOpenOrder(currencyPair)
+        if openLong == True or openShort == True:
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+                currencyPair) + "] Uncompleted orders, waiting... (Sleppage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
+            logger.info(st_)
+            time.sleep(2)
+        else:
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+                currencyPair) + "] Orders completed!!!!"
+            logger.info(st_)
+            complete = True
+
+    #Just to close some trash values that resist on short position
+    res = exchangeShort.closeMarginPosition(currencyPair)
+    if res == -1:
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+            currencyPair) + "] FATAL ERROR completing operation closeMarginPosition. Houston, we have a problem!"
         logger.info(st_)
-        return (newShortPrice - newLongPrice) / newLongPrice
+        exit(-1)
+    pass
+
+
+    #
+    # ok = False
+    # if order_long != -1 and order_short != -1:
+    #     ok = True
+    #
+    # count = 1
+    # while ok == False:
+    #     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+    #         currencyPair) + "] Problem selling/buying. Trying again... Attempt #" + str(count)
+    #     logger.info(st_)
+    #
+    #     if order_long == -1:
+    #         order_long = exchangeLong.sell(currencyPair, newLongPrice, balanceLongAltCoin)
+    #     if order_short == -1:
+    #         order_short = exchangeShort.buyMargin(currencyPair, newShortPrice, balanceShortAltCoin)
+    #     if order_long != -1 and order_short != -1:
+    #         ok = True
+    #     time.sleep(1)
+    #     count = count + 1
+    # pass
+
+    #
+    # if altlong != 0.0:
+    #     if altlong != -1:
+    #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #             currencyPair) + "] Problems on long so trying to complete operation"
+    #         logger.info(st_)
+    #         res = exchangeLong.closeAllPositions(currencyPair)
+    #         if res == -1:
+    #             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #                 currencyPair) + "] FATAL ERROR completing operation. Houston, we have a problem!"
+    #             logger.info(st_)
+    #         pass
+    #     else:
+    #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #             currencyPair) + "] Error accessing altcoin balance on long"
+    #
+    # if altshort != 0.0:
+    #     if altshort != -1:
+    #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #             currencyPair) + "] Problems on short so trying to complete operation"
+    #         logger.info(st_)
+    #         res = exchangeShort.closeMarginPosition(currencyPair)
+    #         if res == -1:
+    #             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #                 currencyPair) + "] FATAL ERROR completing operation. Houston, we have a problem!"
+    #             logger.info(st_)
+    #         pass
+    #     else:
+    #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+    #             currencyPair) + "] Error accessing altcoin balance on short"
+
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+        currencyPair) + "] Sell/BuyMargin orders ok..."
+    logger.info(st_)
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on LongEx: " + str(
+        exchangeLong.getOrderBTCValue(order_long))
+    logger.info(st_)
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on ShortEx: " + str(
+        exchangeShort.getOrderBTCValue(order_short))
+    logger.info(st_)
+    return (newShortPrice - newLongPrice) / newLongPrice

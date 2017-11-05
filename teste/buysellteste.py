@@ -5,7 +5,7 @@ import botlib
 import pprint
 import time
 
-COIN_PAIR = 'BTC_DASH'
+COIN_PAIR = 'BTC_CLAM'
 #ORDER_NUMBER =119863928138
 ORDER_NUMBER ='345584f3-5ff0-43c2-a65c-acd3b3fcc10a'
 fac = ExchangeFactory()
@@ -20,7 +20,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 #UUID = exchanges['Bittrex'].sell(COIN_PAIR, 0.00760704,2)
 #pp.pprint(UUID)
-pp.pprint(exchanges['Poloniex'].closeMarginPosition(COIN_PAIR))
+pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
 
 
 

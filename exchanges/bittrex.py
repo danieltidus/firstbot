@@ -41,6 +41,7 @@ class Bittrex (Exchange):
         pair = str_pair[0] + "-" + str_pair[1]
         try:
             response = self.bit.buy_limit(pair, amount, price)
+            print response
             if response['success'] == True:
                 return response['result']
             else:
@@ -55,6 +56,7 @@ class Bittrex (Exchange):
         pair = str_pair[0] + "-" + str_pair[1]
         try:
             response = self.bit.sell_limit(pair, amount, price)
+            print response
             if response['success'] == True:
                 return response['result']
             else:
@@ -80,7 +82,20 @@ class Bittrex (Exchange):
             print str(error)
             return -1
 
-
+    def hasOpenOrder(self, currencyPair):
+        # str_pair = currencyPair.split('_')
+        # pair = str_pair[0] + "-" + str_pair[1]
+        try:
+            res = self.returnOpenOrders(currencyPair)
+            print "Bittrex::haveOpenOrder()"
+            if len(res) == 0:
+                return False
+            else:
+                return True
+        except Exception, error:
+            print("[Bittrex] Error on haveOpenOrder()")
+            print str(error)
+            return False
     def returnOpenOrders(self, currencyPair):
         str_pair = currencyPair.split('_')
         pair = str_pair[0] + "-" + str_pair[1]

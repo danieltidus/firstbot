@@ -105,9 +105,25 @@ class Poloniex (Exchange):
 
     def getMarginBalance(self, currencyPair):
         try:
-            return math.fabs(float(self.pol.getMarginPosition(currencyPair)['amount']))
+            res = self.pol.getMarginPosition(currencyPair)
+            print res
+            return math.fabs(float(res['amount']))
         except KeyError as e:
             print "KeyError: " + str(e)
+            return 0
+
+    def hasOpenOrder(self, currencyPair):
+        try:
+            res = self.returnOpenOrders(currencyPair)
+            print "Poloniex::haveOpenOrder()"
+            if len(res) == 0:
+                return False
+            else:
+                return True
+        except Exception, error:
+            print("[Poloniex] Error on haveOpenOrder()")
+            print str(error)
+            return False
 
     def returnOpenOrders(self, currencyPair):
         return self.pol.returnOpenOrders(currencyPair)

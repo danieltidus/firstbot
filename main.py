@@ -17,11 +17,11 @@ exchanges['Bittrex'] = fac.create('Bittrex')
 
 #Verify arbitrages for long/shorts combinations
 #Parameters - TODO Put on config file;
-spreadEntry=0.0070
+spreadEntry=0.0050
 spreadTarget=0.0050
 simulationTime = 10.0 #simulation time in seconds
 btc_amount = 0.01
-orderBookFactor = 2
+orderBookFactor = 3
 #########################
 
 spreadExit = []
