@@ -4,6 +4,7 @@ from exchanges.exchangefactory import ExchangeFactory
 import botlib
 import pprint
 import time
+import telegram_send
 
 COIN_PAIR = 'BTC_CLAM'
 #ORDER_NUMBER =119863928138
@@ -20,8 +21,9 @@ pp = pprint.PrettyPrinter(indent=4)
 
 #UUID = exchanges['Bittrex'].sell(COIN_PAIR, 0.00760704,2)
 #pp.pprint(UUID)
-pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
-
+# pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
+msg = "asdasdsa"
+telegram_send.send([msg])
 
 
 

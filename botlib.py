@@ -4,6 +4,7 @@ from datetime import datetime
 import time
 import utils
 import logging
+import telegram_send
 
 str_ = "control_" + datetime.now().strftime("%Y%m%d%H%M%S")
 formatter = logging.Formatter('%(levelname)s:%(message)s')
@@ -206,7 +207,8 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
             currencyPair) + "] Stopping bot, sorry! :'("
         logger.info(st_)
         msg = msg + "\n" + st_
-        utils.sendmail('Bot Sucess on SecureOut', msg)
+        #utils.sendmail('Bot Sucess on SecureOut', msg)
+        telegram_send.send([msg])
         exit(-1)
 
     complete = False
@@ -248,7 +250,8 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     # else:
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Buy/Sell orders ok..."
     logger.info(st_)
-    utils.sendmail('Bot Sucess on SecureIn', st_)
+    #utils.sendmail('Bot Sucess on SecureIn', st_)
+    telegram_send.send([st_])
     return ((newBidPrice - newAskPrice) / newAskPrice)
 
 
@@ -407,7 +410,8 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
             currencyPair) + "] Stopping bot, sorry! :'("
         logger.info(st_)
         msg = msg + "\n"+st_
-        utils.sendmail('Bot fail', msg)
+        #utils.sendmail('Bot fail', msg)
+        telegram_send.send([msg])
         exit(-1)
 
     complete = False
@@ -431,7 +435,8 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
             currencyPair) + "] FATAL ERROR completing operation closeMarginPosition. Houston, we have a problem!"
         logger.info(st_)
-        utils.sendmail('Bot fail', st_)
+        #utils.sendmail('Bot fail', st_)
+        telegram_send.send([st_])
         exit(-1)
     pass
 
@@ -501,5 +506,6 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
         exchangeShort.getOrderBTCValue(order_short))
     logger.info(st_)
     msg = msg + "\n" + st_
-    utils.sendmail('Bot Sucess on SecureOut', msg)
+    #utils.sendmail('Bot Sucess on SecureOut', msg)
+    telegram_send.send([msg])
     return (newShortPrice - newLongPrice) / newLongPrice
