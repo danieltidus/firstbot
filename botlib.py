@@ -201,9 +201,12 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
             currencyPair) + "] Problem buying/selling Status order long " + str(order_long) + " Status order " + str(order_short)
         logger.info(st_)
+        msg = st_
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
             currencyPair) + "] Stopping bot, sorry! :'("
         logger.info(st_)
+        msg = msg + "\n" + st_
+        utils.sendmail('Bot Sucess on SecureOut', msg)
         exit(-1)
 
     complete = False
@@ -245,6 +248,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     # else:
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Buy/Sell orders ok..."
     logger.info(st_)
+    utils.sendmail('Bot Sucess on SecureIn', st_)
     return ((newBidPrice - newAskPrice) / newAskPrice)
 
 
@@ -398,9 +402,12 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
             currencyPair) + "] Problem buying/selling Status order long " + str(order_long) + " Status order " + str(order_short)
         logger.info(st_)
+        msg = st_
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
             currencyPair) + "] Stopping bot, sorry! :'("
         logger.info(st_)
+        msg = msg + "\n"+st_
+        utils.sendmail('Bot fail', msg)
         exit(-1)
 
     complete = False
@@ -424,6 +431,7 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
             currencyPair) + "] FATAL ERROR completing operation closeMarginPosition. Houston, we have a problem!"
         logger.info(st_)
+        utils.sendmail('Bot fail', st_)
         exit(-1)
     pass
 
@@ -480,13 +488,18 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
     #             currencyPair) + "] Error accessing altcoin balance on short"
 
+    msg = ""
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
         currencyPair) + "] Sell/BuyMargin orders ok..."
     logger.info(st_)
+    msg = msg + st_
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on LongEx: " + str(
         exchangeLong.getOrderBTCValue(order_long))
     logger.info(st_)
+    msg = msg + "\n" + st_
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on ShortEx: " + str(
         exchangeShort.getOrderBTCValue(order_short))
     logger.info(st_)
+    msg = msg + "\n" + st_
+    utils.sendmail('Bot Sucess on SecureOut', msg)
     return (newShortPrice - newLongPrice) / newLongPrice
