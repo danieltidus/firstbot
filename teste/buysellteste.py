@@ -4,7 +4,8 @@ from exchanges.exchangefactory import ExchangeFactory
 import botlib
 import pprint
 import time
-import telegram_send
+import ConfigParser
+
 
 COIN_PAIR = 'BTC_CLAM'
 #ORDER_NUMBER =119863928138
@@ -22,10 +23,42 @@ pp = pprint.PrettyPrinter(indent=4)
 #UUID = exchanges['Bittrex'].sell(COIN_PAIR, 0.00760704,2)
 #pp.pprint(UUID)
 # pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
-msg = "asdasdsa"
-telegram_send.send([msg])
+
+config = ConfigParser.RawConfigParser();
+config.read('bot.cfg');
+ex1=config.get('General', 'Exchange1')
+ex2=config.get('General', 'Exchange2')
+print "Key da " + ex1 + " " + config.get(ex1, 'apiKey')
+print "Secret da " + ex1 + " " + config.get(ex1, 'secret')
+print "Fees na " + ex1 + " Maker: " + config.get(ex1, 'fee_maker') + " Taker: " + config.get(ex1, 'fee_taker')
+print "Key da " + ex2 + " " + config.get(ex2, 'apiKey')
+print "Secret da " + ex2 + " " + config.get(ex2, 'secret')
+print "Fees na " + ex2 + " Maker: " + config.get(ex2, 'fee_maker') + " Taker: " + config.get(ex2, 'fee_taker')
+
+print "spreadEntry: " + config.get('General', 'spreadEntry')
+print "spreadTarget: " + config.get('General', 'spreadTarget')
+print "simulationTime: " +config.get('General', 'simulationTime')
+print "BTC amount: " + config.get('General', 'btc_amount')
+print "Order Book Factor: " + config.get('General', 'orderBookFactor')
 
 
+#Verify arbitrages for long/shorts combinations
+#Parameters - TODO Put on config file;
+spreadEntry=float(config.get('General', 'spreadEntry'))
+spreadTarget=float(config.get('General', 'spreadTarget'))
+simulationTime =float(config.get('General', 'simulationTime'))
+btc_amount = float(config.get('General', 'btc_amount'))
+orderBookFactor = float(config.get('General', 'orderBookFactor'))
+print spreadEntry
+print spreadTarget
+print simulationTime
+print btc_amount
+print orderBookFactor
+#########################
+
+#Just for tests
+fees = float(config.get(ex1, 'fee_maker')) + float(config.get(ex1, 'fee_taker')) + float(config.get(ex2, 'fee_maker')) + float(config.get(ex2, 'fee_taker'))
+print "Total de fees: " + str(fees)
 
 # print "Get Balance long..."
 # balanceLong = exchanges['Bittrex'].getBalance('BTC')

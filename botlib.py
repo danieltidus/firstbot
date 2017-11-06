@@ -22,9 +22,6 @@ def findCombinations(exchanges={}):
         logger.info(st_)
         pairsByExchange[exchanges[ex].getExchangeName()] = exchanges[ex].getLongShortPairs();
 
-        # st_ = "Long short to " + exchanges[ex].getExchangeName()
-        # st_ = pairsByExchange[exchanges[ex].getExchangeName()]
-        # st_ = "\n\n\n\n"
         pass
     id_ = 0
     for ex in pairsByExchange:

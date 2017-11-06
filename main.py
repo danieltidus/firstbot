@@ -8,30 +8,37 @@ import math
 from exchanges.exchangefactory import ExchangeFactory
 import utils
 import logging
+import ConfigParser
 
 fac = ExchangeFactory()
 
+config = ConfigParser.RawConfigParser();
+config.read('bot.cfg');
+ex1 = config.get('General', 'Exchange1')
+ex2 = config.get('General', 'Exchange2')
+
 exchanges = {}
-exchanges['Poloniex'] = fac.create('Poloniex')
-exchanges['Bittrex'] = fac.create('Bittrex')
+
+exchanges[ex1] = fac.create(ex1)
+exchanges[ex2] = fac.create(ex2)
 
 #Verify arbitrages for long/shorts combinations
-#Parameters - TODO Put on config file;
-spreadEntry=0.0010
-spreadTarget=0.0010
-simulationTime = 10.0 #simulation time in seconds
-btc_amount = 0.01
-orderBookFactor = 3
+
+spreadEntry=float(config.get('General', 'spreadEntry'))
+spreadTarget=float(config.get('General', 'spreadTarget'))
+simulationTime =float(config.get('General', 'simulationTime'))
+btc_amount = float(config.get('General', 'btc_amount'))
+orderBookFactor = float(config.get('General', 'orderBookFactor'))
 #########################
 
 spreadExit = []
 combinations = botlib.findCombinations(exchanges)
-print combinations
+print "Combinations" + str(combinations)
 
-print exchanges['Bittrex'].getBid("BTC_ETH")
-print exchanges['Bittrex'].getAsk("BTC_LTC")
+print exchanges[ex2].getBid("BTC_ETH")
+print exchanges[ex2].getAsk("BTC_LTC")
 #Just for tests
-fees = 0.0090
+fees = float(config.get(ex1, 'fee_maker')) + float(config.get(ex1, 'fee_taker')) + float(config.get(ex2, 'fee_maker')) + float(config.get(ex2, 'fee_taker'))
 spread = {}
 spreadExit = {}
 profitCount = {}
@@ -45,9 +52,27 @@ print profitCount
 str_ = "log_" + datetime.now().strftime("%Y%m%d%H%M%S")
 formatter = logging.Formatter('%(levelname)s:%(message)s')
 logger = utils.setup_logger('main_logger', str_, formatter)
-#logging.basicConfig(filename=str_, format='%(levelname)s:%(message)s', level=logging.INFO)
+
 logger.info("Start simulation at %s", datetime.now().ctime())
-logger.info("")
+st_ = "Exchange 1: " + ex1
+logger.info(st_)
+st_ = "Exchange 2: " + ex2
+logger.info(st_)
+st_ = "Fees na " + ex1 + " Maker: " + config.get(ex1, 'fee_maker') + " Taker: " + config.get(ex1, 'fee_taker')
+logger.info(st_)
+st_ = "Fees na " + ex2 + " Maker: " + config.get(ex2, 'fee_maker') + " Taker: " + config.get(ex2, 'fee_taker')
+logger.info(st_)
+st_ = "Total fees: " + str(fees)
+st_ = "spreadEntry: " + config.get('General', 'spreadEntry')
+logger.info(st_)
+st_ = "spreadTarget: " + config.get('General', 'spreadTarget')
+logger.info(st_)
+st_ = "simulationTime: " +config.get('General', 'simulationTime')
+logger.info(st_)
+st_ = "BTC amount: " + config.get('General', 'btc_amount')
+logger.info(st_)
+st_ = "Order Book Factor: " + config.get('General', 'orderBookFactor')
+logger.info(st_)
 logger.info("")
 
 while 1:
@@ -55,9 +80,9 @@ while 1:
     #Looking entry opportunities
 
     #print "Get Balance long..."
-    balanceLong = exchanges['Bittrex'].getBalance('BTC')
+    balanceLong = exchanges[ex2].getBalance('BTC')
     #print "Get Balance short..."
-    balanceShort = exchanges['Poloniex'].getBalance('BTC')
+    balanceShort = exchanges[ex1].getBalance('BTC')
 
 
     for c in combinations:

@@ -216,10 +216,10 @@ class Bittrex (Exchange):
         m_type = {}
 
         try:
+
             result = self.bit.get_markets()
 
             pairs = result["result"]
-
             for value in pairs:
                 long_pairs[value["MarketCurrency"]] = value["BaseCurrency"]
 

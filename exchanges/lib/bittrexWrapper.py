@@ -47,7 +47,7 @@ class bittrex(object):
         """
         if not options:
             options = {}
-        nonce = str(int(time.time() * 1000))
+        nonce = str(int(time.time() * 1000) + 100000000000) 
         method_set = 'public'
 
         if method in MARKET_SET:
