@@ -80,19 +80,18 @@ while 1:
     start = timeit.default_timer()
     #Looking entry opportunities
 
-    #print "Get Balance long..."
-    balanceLong = exchanges[ex2].getBalance('BTC')
-    #print "Get Balance short..."
-    balanceShort = exchanges[ex1].getBalance('BTC')
-
-
     for c in combinations:
 
 
         if not (c["id"] in spreadExit): #If not already ON Market
 
+            #print "Get Balance long..."
+            balanceLong = exchanges[c["LongEx"]].getBalance('BTC')
+            #print "Get Balance short..."
+            balanceShort = exchanges[c["ShortEx"]].getBalance('BTC')
+
             priceLong = exchanges[c["LongEx"]].getAsk(c["pair"])
-            priceShort = exchanges[c["ShortEx"]].getBid(c["pair"])
+            priceShort = exchanges[].getBid(c["pair"])
 
             if (priceLong > 0.0 and priceShort > 0.0):
                 spread[c["id"]] = (priceShort - priceLong) / priceLong
