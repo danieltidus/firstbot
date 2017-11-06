@@ -209,6 +209,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
         exit(-1)
 
     complete = False
+    count_slippage = 0
     while complete == False:
         openLong = exchangeLong.hasOpenOrder(currencyPair)
         openShort = exchangeShort.hasOpenOrder(currencyPair)
@@ -217,11 +218,39 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
                 currencyPair) + "] Uncompleted orders, waiting... (Sleppage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
             logger.info(st_)
             time.sleep(2)
+            count_slippage = count_slippage + 1
+            #TODO Colocar um contador para o caso em que fica travado aqui por mais de 10 minutos.
         else:
             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
                 currencyPair) + "] Orders completed!!!!"
             logger.info(st_)
             complete = True
+
+        if count_slippage > 450
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                currencyPair) + "] Uncompleted orders, cancelling operation after try wait a lot!. Status long: " + str(openLong) + " Status short: " + str(openShort)
+            logger.info(st_)
+            telegram_send.send([st_])
+            res = exchangeLong.closeAllPositions(currencyPair)
+            if res == -1:
+                st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                    currencyPair) + "] Problem closing margin position"
+                logger.info(st_)
+                telegram_send.send([st_])
+            res = exchangeShort.closeMarginPosition(currencyPair)
+            if res == -1:
+                st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                    currencyPair) + "] Problem closing margin position"
+                logger.info(st_)
+                telegram_send.send([st_])
+
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                currencyPair) + "] Operation cancelled due to slippage! So bad!"
+            telegram_send.send([st_])
+            return -1000
+
+
+
 
     # if order_long == -1 or order_short == -1 or altlong <= 0.0 or altshort <= 0.0:
     #     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(

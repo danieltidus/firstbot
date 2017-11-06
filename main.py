@@ -91,7 +91,7 @@ while 1:
             balanceShort = exchanges[c["ShortEx"]].getBalance('BTC')
 
             priceLong = exchanges[c["LongEx"]].getAsk(c["pair"])
-            priceShort = exchanges[].getBid(c["pair"])
+            priceShort = exchanges[c["ShortEx"]].getBid(c["pair"])
 
             if (priceLong > 0.0 and priceShort > 0.0):
                 spread[c["id"]] = (priceShort - priceLong) / priceLong
