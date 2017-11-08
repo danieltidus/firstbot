@@ -1,5 +1,7 @@
 from exchanges.poloniex import Poloniex;
 from exchanges.bittrex import Bittrex;
+from exchanges.bitfinex import Bitfinex;
+
 import ConfigParser
 
 class ExchangeFactory(object):
@@ -11,3 +13,5 @@ class ExchangeFactory(object):
         return Poloniex(config.get('Poloniex', 'apiKey'), config.get('Poloniex', 'secret'));
     elif exchange == 'Bittrex':
         return Bittrex(config.get('Bittrex', 'apiKey'), config.get('Bittrex', 'secret'));
+    elif exchange == 'Bitfinex':
+        return Bitfinex(config.get('Bitfinex', 'apiKey'), config.get('Bitfinex', 'secret'));
