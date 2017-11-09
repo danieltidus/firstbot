@@ -31,23 +31,13 @@ btc_amount = float(config.get('General', 'btc_amount'))
 orderBookFactor = float(config.get('General', 'orderBookFactor'))
 #########################
 
-spreadExit = []
 combinations = botlib.findCombinations(exchanges)
 print "Combinations" + str(combinations)
 
-print exchanges[ex2].getBid("BTC_ETH")
-print exchanges[ex2].getAsk("BTC_LTC")
 #Just for tests
 fees = float(config.get(ex1, 'fee_maker')) + float(config.get(ex1, 'fee_taker')) + float(config.get(ex2, 'fee_maker')) + float(config.get(ex2, 'fee_taker'))
 spread = {}
-spreadExit = {}
-profitCount = {}
 
-for c in combinations:
-    profitCount[c["id"]] = 0
-    pass
-
-print profitCount
 
 str_ = "log_" + datetime.now().strftime("%Y%m%d%H%M%S")
 formatter = logging.Formatter('%(levelname)s:%(message)s')
@@ -76,12 +66,37 @@ st_ = "Order Book Factor: " + config.get('General', 'orderBookFactor')
 logger.info(st_)
 logger.info("")
 
+spreadExit = {}
+profitCount = {}
+
+#Loading state if exist and user wanna load.
+if utils.hasSavedState(exchanges[ex1].getExchangeName(), exchanges[ex2].getExchangeName()):
+    # Setting up state
+    ok = False
+    ans = ""
+    while(ok == False):
+        print "There is a state file with data stored for this combination of exchanges!"
+        print "Do you want to load this state? [s/n]"
+        ans = input('Choose a number: ')
+        if ans == "s" or ans == "n":
+            ok = True
+
+    if ans == "s":
+        spreadExit = utils.loadStateSpread(ex1, ex2)
+        profitCount = utils.loadProfitCount(ex1, ex2)
+pass
+
+if len(profitCount) == 0:
+    for c in combinations:
+        profitCount[c["id"]] = 0
+        pass
+pass
+
 while 1:
     start = timeit.default_timer()
+
     #Looking entry opportunities
-
     for c in combinations:
-
 
         if not (c["id"] in spreadExit): #If not already ON Market
 
@@ -113,6 +128,7 @@ while 1:
                 if realSpread != -1000 and realSpread != -1001:
                     logger.info("[ %s ] Everything ok! Arbitrage opportunity explored!", datetime.now().ctime())
                     spreadExit[c["id"]] = realSpread - spreadTarget - fees
+                    utils.addState(ex1, ex2, c["id"], c["pair"], spreadExit[c["id"]])
                 else:
                     if realSpread == -1001:
                         logger.info(" [ %s ] Arbitrage opportunity not explored. Some problem on buy/sell operations. you should revert (TODO)!", datetime.now().ctime())
@@ -160,7 +176,9 @@ while 1:
                     str_ = "[ " + str(datetime.now().ctime()) + " ] " + "We made " + str(spreadTarget * 100) + "% of profit!"
                     logger.info(str_)
                     spreadExit.pop(c["id"])
+                    utils.removeState(ex1, ex2, c["id"])
                     profitCount[c["id"]] = profitCount[c["id"]] + 1
+                    utils.updateStateofCounters(ex1, ex2, combinations, profitCount)
                 else:
                     if realSpread == -1001:
                         logger.info(

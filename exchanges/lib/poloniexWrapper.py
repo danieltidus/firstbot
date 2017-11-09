@@ -39,7 +39,7 @@ class poloniex:
                 return json.loads(ret.read())
             else:
                 req['command'] = command
-                req['nonce'] = int(time.time()*1000 + 100000000000)
+                req['nonce'] = int(time.time()*1000 + 3100000000000)
                 post_data = urllib.urlencode(req)
 
                 sign = hmac.new(self.Secret, post_data, hashlib.sha512).hexdigest()

@@ -18,7 +18,7 @@ class Poloniex (Exchange):
         except Exception, error:
             print("Error getting Bid")
             print str(error)
-            return 0.0;
+            return 0.0
 
     def getAsk(self, currencyPair):
         try:

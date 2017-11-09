@@ -226,7 +226,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
             logger.info(st_)
             complete = True
 
-        if count_slippage > 2000
+        if count_slippage > 2000:
             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
                 currencyPair) + "] Uncompleted orders, cancelling operation after try wait a lot!. Status long: " + str(openLong) + " Status short: " + str(openShort)
             logger.info(st_)
