@@ -40,11 +40,11 @@ def addState(ex1, ex2, id, currencyPair, spreadExit):
     state_file = "botstate_" + str(ex1) + "_" + str(ex2) + ".cfg"
     config.read(state_file)
 
-    config.add_section(id)
-    config.set(id, 'currencyPair', str(currencyPair))
-    config.set(id, 'spreadExit', str(spreadExit))
+    config.add_section(str(id))
+    config.set(str(id), 'currencyPair', str(currencyPair))
+    config.set(str(id), 'spreadExit', str(spreadExit))
 
-    with open('botstate.cfg', 'w') as configfile:
+    with open(state_file, 'w') as configfile:
         config.write(configfile)
 
 
@@ -53,8 +53,8 @@ def removeState(ex1, ex2, id):
     state_file = "botstate_" + str(ex1) + "_" + str(ex2) + ".cfg"
     config.read(state_file)
 
-    config.remove_section(id)
-    with open('botstate.cfg', 'w') as configfile:
+    config.remove_section(str(id))
+    with open(state_file, 'w') as configfile:
         config.write(configfile)
 
 
@@ -66,10 +66,10 @@ def updateStateofCounters(ex1, ex2, combinations, profitCount):
     config.remove_section('profitCount')
     config.add_section('profitCount')
     for c in combinations:
-        config.set('profitCount', c["id"], str(profitCount[c["id"]]))
+        config.set('profitCount', str(c["id"]), str(profitCount[c["id"]]))
 
 
-    with open('botstate.cfg', 'w') as configfile:
+    with open(state_file, 'w') as configfile:
         config.write(configfile)
 
 def loadStateSpread(ex1, ex2):
@@ -80,7 +80,7 @@ def loadStateSpread(ex1, ex2):
     spreadExit = {}
     for each_section in config.sections():
         if each_section != 'profitCount':
-            spreadExit[str(each_section)] = float(config.get(each_section, 'spreadExit'))
+            spreadExit[int(each_section)] = float(config.get(each_section, 'spreadExit'))
             pass
     return spreadExit
 
@@ -92,7 +92,7 @@ def loadProfitCount(ex1, ex2):
         config.read(state_file)
 
         for (each_key, each_val) in config.items('profitCount'):
-            profitCount[each_key] = float(each_val)
+            profitCount[int(each_key)] = int(each_val)
         pass
     except Exception, error:
         print("Info: Mo  profit count state stored! Initializing from zero...")
