@@ -76,8 +76,8 @@ if utils.hasSavedState(exchanges[ex1].getExchangeName(), exchanges[ex2].getExcha
     ans = ""
     while(ok == False):
         print "There is a state file with data stored for this combination of exchanges!"
-        print "Do you want to load this state? [s/n]"
-        ans = input('Choose a number: ')
+        print "Do you want to load this state?"
+        ans = raw_input('Choose s (sim) or n (nao): ')
         if ans == "s" or ans == "n":
             ok = True
 
