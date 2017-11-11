@@ -134,11 +134,16 @@ class Poloniex (Exchange):
             total = 0
             for order in orders:
                 total += float(order['total'])
+            
+            total = total + total*0.0025
             return total
         except Exception, error:
             print("[Poloniex] Error getting btc value of an order!")
             print str(error)
             return -1
+
+    def getRealCost(self, amount):
+         return amount
 
     def closeMarginPosition(self, currencyPair):
         try:

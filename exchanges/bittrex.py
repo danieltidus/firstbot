@@ -108,8 +108,11 @@ class Bittrex (Exchange):
     def getOrderBTCValue(self, orderNumber):
         try:
             order = self.bit.get_order(orderNumber)
+            print order
             if order['result']['QuantityRemaining'] == 0.0:
-                return order['result']['Price']
+                value =  float(order['result']['Price'])
+                value = value - value*0.0025
+                return value
             else:
                 print("[Bittrex] Error getting btc value of an order! Order still processing")
                 return -1
@@ -117,6 +120,9 @@ class Bittrex (Exchange):
             print("[Bittrex] Error getting btc value of an order!")
             print str(error)
             return -1
+
+    def getRealCost(self, amount):
+         return (amount + amount*0.0025)
 
     def getOrderBook(self, currencyPair, type, depth=10):
         str_pair = currencyPair.split('_')

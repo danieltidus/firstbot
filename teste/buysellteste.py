@@ -25,7 +25,10 @@ pp = pprint.PrettyPrinter(indent=4)
 #pp.pprint(UUID)
 # pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
 
-print  exchanges['Bittrex'].getOrderBTCValue('ef565f3a-788a-4fc8-8c33-1c86c74209df')
+#print  exchanges['Bittrex'].getOrderBTCValue('ef565f3a-788a-4fc8-8c33-1c86c74209df')
+print  exchanges['Bittrex'].getOrderBTCValue(ORDER_NUMBER)
+print  exchanges['Bittrex'].getRealCost(0.01)
+print  exchanges['Poloniex'].getRealCost(0.01)
 # print "Get Balance short..."
 # balanceShort = exchanges['Poloniex'].getBalance('BTC')
 #

@@ -5,6 +5,7 @@ import time
 import utils
 import logging
 import telegram_send
+import ConfigParser
 
 str_ = "control_" + datetime.now().strftime("%Y%m%d%H%M%S")
 formatter = logging.Formatter('%(levelname)s:%(message)s')
@@ -519,19 +520,29 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     #         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
     #             currencyPair) + "] Error accessing altcoin balance on short"
 
+    config = ConfigParser.RawConfigParser();
+    config.read('bot.cfg');
+    amount_btc = float(config.get('General', 'btc_amount'))
+    
+    value_on_long =  exchangeLong.getOrderBTCValue(order_long) - exchangeLong.getRealCost(amount_btc)
+    value_on_short =  exchangeShort.getRealCost(amount_btc) -  exchangeShort.getOrderBTCValue(order_short)
+
     msg = ""
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
         currencyPair) + "] Sell/BuyMargin orders ok..."
     logger.info(st_)
     print "[ " + str(datetime.now().ctime()) + "] Status order BUUUUUUUG: " + str(order_long) + " na moeda: " + str(currencyPair)
-	
-	msg = msg + st_
-    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on LongEx: " + str(
-        exchangeLong.getOrderBTCValue(order_long))
+    msg = msg + st_
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on LongEx: " + str(value_on_long)
     logger.info(st_)
     msg = msg + "\n" + st_
-    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on ShortEx: " + str(
-        exchangeShort.getOrderBTCValue(order_short))
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on ShortEx: " + str(value_on_short)
+    logger.info(st_)
+    msg = msg + "\n" + st_
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: We made profit? How much? " + str(value_on_short + value_on_short)
+    logger.info(st_)
+    msg = msg + "\n" + st_
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: We made profit? How much porcent? " + str(((value_on_short + value_on_short)/amount_btc)*100) + "%"
     logger.info(st_)
     msg = msg + "\n" + st_
     #utils.sendmail('Bot Sucess on SecureOut', msg)
