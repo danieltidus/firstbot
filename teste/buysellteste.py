@@ -25,11 +25,7 @@ pp = pprint.PrettyPrinter(indent=4)
 #pp.pprint(UUID)
 # pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
 
-print utils.hasSavedState("Poloniex", "Bittrex")
-
-# print "Get Balance long..."
-# balanceLong = exchanges['Bittrex'].getBalance('BTC')
-#
+print  exchanges['Bittrex'].getOrderBTCValue('ef565f3a-788a-4fc8-8c33-1c86c74209df')
 # print "Get Balance short..."
 # balanceShort = exchanges['Poloniex'].getBalance('BTC')
 #

@@ -197,7 +197,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
 
     if order_long == -1 or order_short == -1:
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-            currencyPair) + "] Problem buying/selling Status order long " + str(order_long) + " Status order " + str(order_short)
+            currencyPair) + "] Problem buying/selling Status order long " + str(order_long) + " Status order short " + str(order_short)
         logger.info(st_)
         msg = st_
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
@@ -523,7 +523,9 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
         currencyPair) + "] Sell/BuyMargin orders ok..."
     logger.info(st_)
-    msg = msg + st_
+    print "[ " + str(datetime.now().ctime()) + "] Status order BUUUUUUUG: " + str(order_long) + " na moeda: " + str(currencyPair)
+	
+	msg = msg + st_
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on LongEx: " + str(
         exchangeLong.getOrderBTCValue(order_long))
     logger.info(st_)
