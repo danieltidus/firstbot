@@ -43,7 +43,7 @@ class Bittrex (Exchange):
             response = self.bit.buy_limit(pair, amount, price)
             print response
             if response['success'] == True:
-                return response['result']
+                return response['result']['uuid']
             else:
                 return -1
         except Exception, error:
@@ -58,7 +58,7 @@ class Bittrex (Exchange):
             response = self.bit.sell_limit(pair, amount, price)
             print response
             if response['success'] == True:
-                return response['result']
+                return response['result']['uuid']
             else:
                 return -1
         except Exception, error:
