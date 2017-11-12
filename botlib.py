@@ -548,10 +548,10 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on ShortEx: " + str(value_on_short)
     logger.info(st_)
     msg = msg + "\n" + st_
-    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: We made profit? How much? " + str(value_on_short + value_on_short)
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: We made profit? How much? " + str(value_on_long + value_on_short)
     logger.info(st_)
     msg = msg + "\n" + st_
-    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: We made profit? How much porcent? " + str(((value_on_short + value_on_short)/amount_btc)*100) + "%"
+    st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: We made profit? How much porcent? " + str(((value_on_long + value_on_short)/amount_btc)*100) + "%"
     logger.info(st_)
     msg = msg + "\n" + st_
     #utils.sendmail('Bot Sucess on SecureOut', msg)
