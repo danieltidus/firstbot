@@ -219,6 +219,8 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
                 currencyPair) + "] Uncompleted orders, waiting... (Sleppage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
             logger.info(st_)
             time.sleep(2)
+            if count_slippage == 0 :
+               telegram_send(["[ " + str(datetime.now().ctime()) + "] SecureIn::Warning sllipage mode on, pay attention!!!!!"])
             count_slippage = count_slippage + 1
             #TODO Colocar um contador para o caso em que fica travado aqui por mais de 10 minutos.
         else:
@@ -441,7 +443,10 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
         telegram_send.send([msg])
         exit(-1)
 
+    #TODO: Resolver problema aqui igual la no secureIn
     complete = False
+    count_slippage = 0
+
     while complete == False:
         openLong = exchangeLong.hasOpenOrder(currencyPair)
         openShort = exchangeShort.hasOpenOrder(currencyPair)
@@ -450,6 +455,10 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
                 currencyPair) + "] Uncompleted orders, waiting... (Sleppage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
             logger.info(st_)
             time.sleep(2)
+            if count_slippage == 0:
+               telegram_send(["[ " + str(datetime.now().ctime()) + "] SecureOut::Warning sllipage mode on, pay attention!!!!!"])
+            count_slippage = count_slippage + 1
+
         else:
             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
                 currencyPair) + "] Orders completed!!!!"
