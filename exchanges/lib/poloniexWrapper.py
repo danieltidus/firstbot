@@ -63,6 +63,7 @@ class poloniex:
             if str_.find("Nonce") != 1:
                 print "Warning: Bug on Nonce, trying to correct!"
                 self.nonce_sync = self.nonce_sync + 1000000000000
+                return self.api_query(self, command, req)
             return self.post_process({})
 
 
