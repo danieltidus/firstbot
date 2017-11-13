@@ -216,11 +216,11 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
         openShort = exchangeShort.hasOpenOrder(currencyPair)
         if openLong == True or openShort == True:
             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
-                currencyPair) + "] Uncompleted orders, waiting... (Sleppage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
+                currencyPair) + "] Uncompleted orders, waiting... (Slippage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
             logger.info(st_)
             time.sleep(2)
             if count_slippage == 0 :
-               telegram_send.send(["[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]SecureIn::Warning sllipage mode on, pay attention!!!!!"])
+               telegram_send.send(["[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]SecureIn::Warning slippage mode on, pay attention!!!!!"])
             count_slippage = count_slippage + 1
             #TODO Colocar um contador para o caso em que fica travado aqui por mais de 10 minutos.
         else:
@@ -251,6 +251,36 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
                 currencyPair) + "] Operation cancelled due to slippage! So bad!"
             telegram_send.send([st_])
             return -1000
+
+
+
+    if altlong <= 0.0 or altshort <= 0.0:
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+            currencyPair) + "] Fatal error on buy/sell operations!"
+        logger.info(st_)
+        msg = st_
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+            currencyPair) + "] Fatal error: Altcoin balance on long " + str(altlong) + " Altcoin balance on short " + str(altshort)
+        logger.info(st_)
+        msg = msg + st_
+        telegram_send.send([msg])
+        res = exchangeLong.closeAllPositions(currencyPair)
+        if res == -1:
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                currencyPair) + "] Problem closing margin position"
+            logger.info(st_)
+            telegram_send.send([st_])
+        res = exchangeShort.closeMarginPosition(currencyPair)
+        if res == -1:
+            st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+                currencyPair) + "] Problem closing margin position"
+            logger.info(st_)
+            telegram_send.send([st_])
+
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+            currencyPair) + "] Exiting bot to prevent big losts! So bad :'(!"
+        telegram_send.send([st_])
+        exit(-1)
 
 
 
@@ -426,7 +456,7 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     altlong = exchangeLong.getBalance(altcoin)
     altshort = exchangeShort.getMarginBalance(currencyPair)
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
-        currencyPair) + "] Altcoin balance on long " + str(altlong) + "Alcoin balance on short " + str(altshort)
+        currencyPair) + "] Altcoin balance on long " + str(altlong) + "Altcoin balance on short " + str(altshort)
     logger.info(st_)
 
 
@@ -452,11 +482,11 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
         openShort = exchangeShort.hasOpenOrder(currencyPair)
         if openLong == True or openShort == True:
             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
-                currencyPair) + "] Uncompleted orders, waiting... (Sleppage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
+                currencyPair) + "] Uncompleted orders, waiting... (Slippage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
             logger.info(st_)
             time.sleep(2)
             if count_slippage == 0:
-               telegram_send.send(["[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(currencyPair) + "] SecureOut::Warning sllipage mode on, pay attention!!!!!"])
+               telegram_send.send(["[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(currencyPair) + "] SecureOut::Warning slippage mode on, pay attention!!!!!"])
             count_slippage = count_slippage + 1
 
         else:
@@ -532,7 +562,7 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     config = ConfigParser.RawConfigParser();
     config.read('bot.cfg');
     amount_btc = float(config.get('General', 'btc_amount'))
-    
+
     value_on_long =  exchangeLong.getOrderBTCValue(order_long) - exchangeLong.getRealCost(amount_btc)
     value_on_short =  exchangeShort.getRealCost(amount_btc) -  exchangeShort.getOrderBTCValue(order_short)
 
@@ -540,7 +570,6 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
         currencyPair) + "] Sell/BuyMargin orders ok..."
     logger.info(st_)
-    print "[ " + str(datetime.now().ctime()) + "] Status order BUUUUUUUG: " + str(order_long) + " na moeda: " + str(currencyPair)
     msg = msg + st_
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut:: BTC Value gained on LongEx: " + str(value_on_long)
     logger.info(st_)

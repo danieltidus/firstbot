@@ -99,8 +99,9 @@ class Poloniex (Exchange):
     def getBalance(self, currency):
         try:
             return  float(self.pol.returnBalances()[currency]['available'])
-        except KeyError as e:
-            print "KeyError: " + str(e)
+        except Exception, error:
+            print("[Poloniex] Error on getBalance()")
+            print str(error)
             return -1
 
     def getMarginBalance(self, currencyPair):
@@ -134,7 +135,7 @@ class Poloniex (Exchange):
             total = 0
             for order in orders:
                 total += float(order['total'])
-            
+
             total = total + total*0.0025
             return total
         except Exception, error:
