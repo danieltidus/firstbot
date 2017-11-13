@@ -11,6 +11,7 @@ class poloniex:
     def __init__(self, APIKey, Secret):
         self.APIKey = APIKey
         self.Secret = Secret
+        self.nonce_sync = 3100000000000
 
     def post_process(self, before):
         after = before
@@ -39,7 +40,7 @@ class poloniex:
                 return json.loads(ret.read())
             else:
                 req['command'] = command
-                req['nonce'] = int(time.time()*1000 + 3100000000000)
+                req['nonce'] = int(time.time()*1000 + self.nonce_sync)
                 post_data = urllib.urlencode(req)
 
                 sign = hmac.new(self.Secret, post_data, hashlib.sha512).hexdigest()
@@ -56,7 +57,12 @@ class poloniex:
 
         except urllib2.HTTPError, e:
             print "Error code: " + str(e.code)
-            print e.read()
+            str_ = e.read()
+            print str_.find("Nonce")
+            print str_
+            if str_.find("Nonce") != 1:
+                print "Warning: Bug on Nonce, trying to correct!"
+                self.nonce_sync = self.nonce_sync + 1000000000000
             return self.post_process({})
 
 
@@ -101,8 +107,8 @@ class poloniex:
     # amount        Quantity of order
     # total         Total value of order (price * quantity)
     # type          sell or buy
-    def returnTradeHistory(self,currencyPair):
-        return self.api_query('returnTradeHistory',{"currencyPair":currencyPair})
+    def returnTradeHistory(self,currencyPair, start=0):
+        return self.api_query('returnTradeHistory',{"currencyPair":currencyPair, "start": start})
 
     # Places a buy order in a given market. Required POST parameters are "currencyPair", "rate", and "amount". If successful, the method will return the order number.
     # Inputs:

@@ -97,13 +97,19 @@ class Bittrex (Exchange):
             print str(error)
             return False
     def returnOpenOrders(self, currencyPair):
-        str_pair = currencyPair.split('_')
-        pair = str_pair[0] + "-" + str_pair[1]
-        response = self.bit.get_open_orders(pair)
-        if response['success'] == True:
-            return response['result']
-        else:
-            return None
+        try:
+            str_pair = currencyPair.split('_')
+            pair = str_pair[0] + "-" + str_pair[1]
+            response = self.bit.get_open_orders(pair)
+            if response['success'] == True:
+                return response['result']
+            else:
+                print("[Bittrex] Error on haveOpenOrder(). Requisition fail")
+                return {}
+        except Exception, error:
+            print("[Bittrex] Error on haveOpenOrder()")
+            print str(error)
+            return {}
 
     def getOrderBTCValue(self, orderNumber):
         try:
@@ -125,23 +131,29 @@ class Bittrex (Exchange):
          return (amount + amount*0.0025)
 
     def getOrderBook(self, currencyPair, type, depth=10):
-        str_pair = currencyPair.split('_')
-        pair = str_pair[0] + "-" + str_pair[1]
-        response = self.bit.get_orderbook(pair, 'both', depth)
-        if response['success'] == True:
-            if type == 'asks':
-                list = response['result']['sell'][:depth]
+        try:
+            str_pair = currencyPair.split('_')
+            pair = str_pair[0] + "-" + str_pair[1]
+            response = self.bit.get_orderbook(pair, 'both', depth)
+            if response['success'] == True:
+                if type == 'asks':
+                    list = response['result']['sell'][:depth]
+                else:
+                    list = response['result']['buy'][:depth]
+
+                new_list = []
+                for l in list:
+                    new_list.append([l['Rate'], l['Quantity']])
+
+                return new_list
             else:
-                list = response['result']['buy'][:depth]
-
-            new_list = []
-            for l in list:
-                new_list.append([l['Rate'], l['Quantity']])
-
-            return new_list
-        else:
-            return None
-        pass
+                print("[Bittrex] Error on getOrderBook(). Requisition fail")
+                return -1
+            pass
+        except Exception, error:
+            print("[Bittrex] Error getting order book!")
+            print str(error)
+            return -1
 
 
     def closeAllPositions(self, currencyPair):
@@ -173,7 +185,7 @@ class Bittrex (Exchange):
                     for x in orderBookLong:
                         altcoin_volume_avaiable_long += float(x[1])
                         newLongPrice = float(x[0])
-                        if altcoin_volume_avaiable_long >= amount * 2.5:
+                        if altcoin_volume_avaiable_long >= amount * 5:
                             break
                         pass
                     pass

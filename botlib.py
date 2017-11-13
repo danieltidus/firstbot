@@ -72,8 +72,8 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
 
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "] Orderbook"
     logger.info(st_)
-    orderBookLong = exchangeLong.getOrderBook(currencyPair, 'asks', 10)
-    orderBookShort = exchangeShort.getOrderBook(currencyPair, 'bids', 10)
+    orderBookLong = exchangeLong.getOrderBook(currencyPair, 'asks', 20)
+    orderBookShort = exchangeShort.getOrderBook(currencyPair, 'bids', 20)
 
     st_ = "Orderbook Long..."
     logger.info(st_)
@@ -338,9 +338,9 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
     # We invert, cause we will make opposit operations. Go selling on longExchange and buying on ShortExchange
     st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(currencyPair) + "] Orderbook"
     logger.info(st_)
-    orderBookLong = exchangeLong.getOrderBook(currencyPair, 'bids', 10)  #
+    orderBookLong = exchangeLong.getOrderBook(currencyPair, 'bids', 20)  #
     orderBookShort = exchangeShort.getOrderBook(currencyPair, 'asks',
-                                                10)  # We invert, cause we will make opposit operations
+                                                20)  # We invert, cause we will make opposit operations
 
     st_ = "Orderbook Long..."
     logger.info(st_)
@@ -488,12 +488,21 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
             if count_slippage == 0:
                telegram_send.send(["[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(currencyPair) + "] SecureOut::Warning slippage mode on, pay attention!!!!!"])
             count_slippage = count_slippage + 1
-
         else:
             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
                 currencyPair) + "] Orders completed!!!!"
             logger.info(st_)
             complete = True
+
+        #After one minute I force close position on long. On short I don't need because It will be executed in sequence!
+        if count_slippage >= 30:
+            res = exchangeLong.closeAllPositions(currencyPair)
+            if res == -1:
+                st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+                    currencyPair) + "] Problem closing position on long exchage, due to sllipage on SecureOut"
+                logger.info(st_)
+                telegram_send.send([st_])
+
 
     #Just to close some trash values that resist on short position
     res = exchangeShort.closeMarginPosition(currencyPair)

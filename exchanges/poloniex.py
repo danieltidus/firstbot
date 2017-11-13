@@ -1,4 +1,5 @@
 import math
+import time
 
 from exchange import Exchange;
 from lib.poloniexWrapper import poloniex;
@@ -37,7 +38,12 @@ class Poloniex (Exchange):
             return {}
 
     def tradableBalances(self):
-        return self.pol.returnTradableBalances()
+        try:
+            return self.pol.returnTradableBalances()
+        except Exception, error:
+            print("Error getting Bid")
+            print str(error)
+            return {}
 
     #Return exchange fee. You must multiply by 100 to get fee in percentage
     def getFee(self):
@@ -58,7 +64,7 @@ class Poloniex (Exchange):
         except Exception, error:
             print("Error getting Order book")
             print str(error)
-            return {};
+            return {}
 
     def buy(self, currencyPair, price, amount):
         try:
@@ -109,9 +115,10 @@ class Poloniex (Exchange):
             res = self.pol.getMarginPosition(currencyPair)
             print res
             return math.fabs(float(res['amount']))
-        except KeyError as e:
-            print "KeyError: " + str(e)
-            return 0
+        except Exception, error:
+            print("[Poloniex] Error on getMarginBalance()")
+            print str(error)
+            return -1
 
     def hasOpenOrder(self, currencyPair):
         try:
@@ -127,7 +134,12 @@ class Poloniex (Exchange):
             return False
 
     def returnOpenOrders(self, currencyPair):
-        return self.pol.returnOpenOrders(currencyPair)
+        try:
+            return self.pol.returnOpenOrders(currencyPair)
+        except Exception, error:
+            print("Error returning open orders")
+            print str(error)
+            return {}
 
     def getOrderBTCValue(self, orderNumber):
         try:
@@ -142,6 +154,34 @@ class Poloniex (Exchange):
             print("[Poloniex] Error getting btc value of an order!")
             print str(error)
             return -1
+
+
+    def getBTCByPair(self, currencyPair):
+        try:
+            orders = self.returnHistory(currencyPair)
+            total_amount = 0
+            for order in orders:
+                if order["type"] == "sell":
+                    break
+                else:
+                    total_amount = total_amount + float(order["total"])
+                    
+            return total_amount
+        except Exception, error:
+            print("[Poloniex] Error getting btc value of an order!")
+            print str(error)
+            return -1
+
+
+    def returnHistory(self,currencyPair, days=3):
+        try:
+            start = time.time()- 3600*24*days
+            return self.pol.returnTradeHistory(currencyPair, start)
+        except Exception, error:
+            print("[Poloniex] Error returning history!")
+            print str(error)
+            return {}
+
 
     def getRealCost(self, amount):
          return amount

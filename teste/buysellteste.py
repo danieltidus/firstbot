@@ -8,7 +8,7 @@ import ConfigParser
 import utils
 
 
-COIN_PAIR = 'BTC_CLAM'
+COIN_PAIR = 'BTC_XMR'
 #ORDER_NUMBER =119863928138
 ORDER_NUMBER ='345584f3-5ff0-43c2-a65c-acd3b3fcc10a'
 fac = ExchangeFactory()
@@ -26,9 +26,7 @@ pp = pprint.PrettyPrinter(indent=4)
 # pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
 
 #print  exchanges['Bittrex'].getOrderBTCValue('ef565f3a-788a-4fc8-8c33-1c86c74209df')
-print  exchanges['Bittrex'].getOrderBTCValue(ORDER_NUMBER)
-print  exchanges['Bittrex'].getRealCost(0.01)
-print  exchanges['Poloniex'].getRealCost(0.01)
+
 # print "Get Balance short..."
 # balanceShort = exchanges['Poloniex'].getBalance('BTC')
 #
