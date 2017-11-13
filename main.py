@@ -34,6 +34,7 @@ orderBookFactor = float(config.get('General', 'orderBookFactor'))
 combinations = botlib.findCombinations(exchanges)
 print "Combinations" + str(combinations)
 
+
 #Just for tests
 fees = float(config.get(ex1, 'fee_maker')) + float(config.get(ex1, 'fee_taker')) + float(config.get(ex2, 'fee_maker')) + float(config.get(ex2, 'fee_taker'))
 spread = {}

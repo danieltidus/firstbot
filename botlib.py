@@ -220,7 +220,7 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
             logger.info(st_)
             time.sleep(2)
             if count_slippage == 0 :
-               telegram_send(["[ " + str(datetime.now().ctime()) + "] SecureIn::Warning sllipage mode on, pay attention!!!!!"])
+               telegram_send.send(["[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(currencyPair) + "]SecureIn::Warning sllipage mode on, pay attention!!!!!"])
             count_slippage = count_slippage + 1
             #TODO Colocar um contador para o caso em que fica travado aqui por mais de 10 minutos.
         else:
@@ -456,7 +456,7 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
             logger.info(st_)
             time.sleep(2)
             if count_slippage == 0:
-               telegram_send(["[ " + str(datetime.now().ctime()) + "] SecureOut::Warning sllipage mode on, pay attention!!!!!"])
+               telegram_send.send(["[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(currencyPair) + "] SecureOut::Warning sllipage mode on, pay attention!!!!!"])
             count_slippage = count_slippage + 1
 
         else:
