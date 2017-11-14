@@ -100,7 +100,7 @@ telegram_send.send(['Firsbot Ping: We are starting at ' + str(datetime.now().cti
 
 while 1:
     start = timeit.default_timer()
-    # delta_time = start - time_ticker
+    delta_time = start - time_ticker
     #Looking entry opportunities
     for c in combinations:
 
