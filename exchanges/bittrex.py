@@ -244,14 +244,14 @@ class Bittrex (Exchange):
                     # long_pairs[value["MarketCurrency"]] = value["BaseCurrency"]
 
             #TODO Bug on bittrex for this pairs. FIXME add BTC-LTC, BTC-ETH and BTC-XRP hardcoded;
-            long_pairs['LTC'] = 'BTC'
-            long_pairs['ETH'] = 'BTC'
-            long_pairs['XRP'] = 'BTC'
-            long_pairs['XMR'] = 'BTC'
-            long_pairs['DASH'] = 'BTC'
-            long_pairs['FCT'] = 'BTC'
+            # long_pairs['LTC'] = 'BTC'
+            # long_pairs['ETH'] = 'BTC'
+            # long_pairs['XRP'] = 'BTC'
+            # long_pairs['XMR'] = 'BTC'
+            # long_pairs['DASH'] = 'BTC'
+            # long_pairs['FCT'] = 'BTC'
             # long_pairs['ZEC'] = 'BTC'
-
+            long_pairs.pop('BTS')
             m_type["LONG"] = long_pairs
             m_type["SHORT"] = short_pairs
 

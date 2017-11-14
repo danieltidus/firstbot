@@ -18,7 +18,7 @@ exchanges = {'Bittrex': fac.create('Bittrex'), 'Poloniex': fac.create('Poloniex'
 pp = pprint.PrettyPrinter(indent=4)
 
 print "Pares Poloniex"
-pp.pprint(exchanges['Poloniex'].getLongShortPairs())
+# pp.pprint(exchanges['Bittrex'].getBid(COIN_PAIR))
 
 print "Combinations"
 pp.pprint(botlib.findCombinations(exchanges))
