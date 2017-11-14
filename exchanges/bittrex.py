@@ -21,7 +21,7 @@ class Bittrex (Exchange):
              pair = str_pair[0]+"-"+str_pair[1]
              return self.bit.get_ticker(pair)["result"]["Bid"]
          except Exception, error:
-             print("Error getting Bid")
+             print("[Bittrex] Error getting Bid. Pair: " + str(currencyPair))
              print str(error)
              return 0.0
 
@@ -32,7 +32,7 @@ class Bittrex (Exchange):
             pair = str_pair[0]+"-"+str_pair[1]
             return self.bit.get_ticker(pair)["result"]["Ask"]
         except Exception, error:
-            print("Error getting Ask")
+            print("[Bittrex] Error getting Ask. Pair: " + str(currencyPair))
             print str(error)
             return 0.0
 

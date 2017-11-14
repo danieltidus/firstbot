@@ -21,7 +21,7 @@ class Bitfinex (Exchange):
             pair = str_pair[0]+str_pair[1]
             return float(self.bif.ticker(pair.lower())['bid'])
         except Exception, error:
-            print("[" + str(self.getExchangeName()) + "] Error getting Bid")
+            print("[" + str(self.getExchangeName()) + "] Error getting Bid. Pair: " + str(currencyPair))
             print str(error)
             return 0.0
 
@@ -31,7 +31,7 @@ class Bitfinex (Exchange):
             pair = str_pair[0]+str_pair[1]
             return float(self.bif.ticker(pair.lower())['ask'])
         except Exception, error:
-            print("[" + str(self.getExchangeName()) + "] Error getting Ask")
+            print("[" + str(self.getExchangeName()) + "] Error getting Ask. Pair: " + str(currencyPair))
             print str(error)
             return 0.0
 

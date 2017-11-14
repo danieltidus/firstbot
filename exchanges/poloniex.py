@@ -17,7 +17,7 @@ class Poloniex (Exchange):
         try:
             return float(self.pol.returnTicker()[currencyPair]["highestBid"]);
         except Exception, error:
-            print("Error getting Bid")
+            print("[Poloniex] Error getting Bid. Pair: " + str(currencyPair))
             print str(error)
             return 0.0
 
@@ -25,7 +25,7 @@ class Poloniex (Exchange):
         try:
             return float(self.pol.returnTicker()[currencyPair]["lowestAsk"]);
         except Exception, error:
-            print("Error getting Ask")
+            print("[Poloniex] Error getting Ask. Pair: " + str(currencyPair))
             print str(error);
             return 0.0;
 
