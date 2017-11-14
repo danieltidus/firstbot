@@ -9,6 +9,7 @@ from exchanges.exchangefactory import ExchangeFactory
 import utils
 import logging
 import ConfigParser
+import telegram_send
 
 fac = ExchangeFactory()
 
@@ -93,9 +94,13 @@ if len(profitCount) == 0:
         pass
 pass
 
+#Just to send informations each hour
+time_ticker = timeit.default_timer()
+telegram_send.send(['Firsbot Ping: We are starting at ' + str(datetime.now().ctime())
+
 while 1:
     start = timeit.default_timer()
-
+    delta_time = start - time_ticker
     #Looking entry opportunities
     for c in combinations:
 
@@ -201,6 +206,10 @@ while 1:
         pass
 
     logger.info("\n")
+
+    if delta_time >= 3600:
+        time_ticker = timeit.default_timer()
+        telegram_send.send(['Firsbot Ping: We are alive at ' + str(datetime.now().ctime())
 
     stop =  timeit.default_timer()
     time.sleep(math.fabs(simulationTime - round(stop - start)))
