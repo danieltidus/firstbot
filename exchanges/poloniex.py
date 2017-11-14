@@ -29,7 +29,7 @@ class Poloniex (Exchange):
             print str(error);
             return 0.0;
 
-    def ticker(self):
+    def ticker(self, currencyPair=None):
         try:
             return self.pol.returnTicker();
         except Exception, error:

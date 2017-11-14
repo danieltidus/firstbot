@@ -7,9 +7,9 @@ from datetime import datetime
 
 
 fac = ExchangeFactory()
-exchange = fac.create('Bitfinex')
+exchange = fac.create('Poloniex')
 
-currencyPair = 'BTC_USD'
+currencyPair = 'BTC_LTC'
 apiKey='test'
 price=0.0001
 amount=0.01
@@ -24,20 +24,20 @@ exchange.getExchangeName()
 print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling getApiKey()"
 print exchange.getApiKey()
 
-# print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling setApiKey()"
-# exchange.setApiKey(apiKey)
-#
-# print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling ticker()"
-# pp.pprint(exchange.ticker(currencyPair))
-#
-# print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling getBid()"
-# print exchange.getBid(currencyPair)
-#
-# print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling getAsk()"
-# print exchange.getAsk(currencyPair)
-#
-# print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling tradableBalances()"
-# exchange.tradableBalances()
+print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling setApiKey()"
+exchange.setApiKey(apiKey)
+
+print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling ticker()"
+pp.pprint(exchange.ticker(currencyPair))
+
+print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling getBid()"
+print exchange.getBid(currencyPair)
+
+print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling getAsk()"
+print exchange.getAsk(currencyPair)
+
+print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling tradableBalances()"
+exchange.tradableBalances()
 
 print "\n[ " + str(datetime.now().ctime()) + " ] " + "Calling getLongShortPairs()"
 print exchange.getLongShortPairs()

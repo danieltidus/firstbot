@@ -35,7 +35,7 @@ def findCombinations(exchanges={}):
                             # print pair_on_long
                             # print "Comparing "+str(exchanges[ex].getExchangeName()) + " with "+ str(exchanges[other_ex].getExchangeName()) +" : "+ str(pairsByExchange[other_ex]["SHORT"][pair_on_short]) + "with" + str(pairsByExchange[ex]["LONG"][pair_on_long])
                             if pairsByExchange[other_ex]["SHORT"][pair_on_short] == pairsByExchange[ex]["LONG"][pair_on_long]:
-                                str_pair = exchanges[other_ex].getAlias(pair_on_short) + "_" + pairsByExchange[other_ex]["SHORT"][pair_on_short];
+                                str_pair =  pairsByExchange[other_ex]["SHORT"][pair_on_short]+ "_" + exchanges[other_ex].getAlias(pair_on_short);
                                 combinations.append({'id': id_, 'pair': str_pair, 'LongEx': ex, 'ShortEx': other_ex});
                                 id_ = id_ + 1
                             pass
