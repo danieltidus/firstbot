@@ -239,7 +239,9 @@ class Bittrex (Exchange):
 
             pairs = result["result"]
             for value in pairs:
-                long_pairs[value["MarketCurrency"]] = value["BaseCurrency"]
+                if value["BaseCurrency"] == "BTC":
+                    long_pairs[value["MarketCurrency"]] = value["BaseCurrency"]
+                    # long_pairs[value["MarketCurrency"]] = value["BaseCurrency"]
 
             #TODO Bug on bittrex for this pairs. FIXME add BTC-LTC, BTC-ETH and BTC-XRP hardcoded;
             long_pairs['LTC'] = 'BTC'
@@ -248,6 +250,7 @@ class Bittrex (Exchange):
             long_pairs['XMR'] = 'BTC'
             long_pairs['DASH'] = 'BTC'
             long_pairs['FCT'] = 'BTC'
+            # long_pairs['ZEC'] = 'BTC'
 
             m_type["LONG"] = long_pairs
             m_type["SHORT"] = short_pairs

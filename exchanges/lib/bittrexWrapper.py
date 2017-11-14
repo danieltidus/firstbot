@@ -29,6 +29,7 @@ class bittrex(object):
     Used for requesting Bittrex with API key and API secret
     """
     def __init__(self, api_key, api_secret):
+        self.timeout = 5
         self.api_key = str(api_key) if api_key is not None else ''
         self.api_secret = str(api_secret) if api_secret is not None else ''
 
@@ -47,7 +48,7 @@ class bittrex(object):
         """
         if not options:
             options = {}
-        nonce = str(int(time.time() * 1000) + 100000000000) 
+        nonce = str(int(time.time() * 1000) + 100000000000)
         method_set = 'public'
 
         if method in MARKET_SET:
@@ -64,7 +65,7 @@ class bittrex(object):
 
         return requests.get(
             request_url,
-            headers={"apisign": hmac.new(self.api_secret.encode(), request_url.encode(), hashlib.sha512).hexdigest()}
+            headers={"apisign": hmac.new(self.api_secret.encode(), request_url.encode(), hashlib.sha512).hexdigest()}, timeout=self.timeout
         ).json()
 
     def get_order(self, uuid):

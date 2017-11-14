@@ -22,19 +22,20 @@ def findCombinations(exchanges={}):
         st_ = "Get LongShortPairs to exchange: " + exchanges[ex].getExchangeName();
         logger.info(st_)
         pairsByExchange[exchanges[ex].getExchangeName()] = exchanges[ex].getLongShortPairs();
-
+        logger.info(str(pairsByExchange[exchanges[ex].getExchangeName()]))
         pass
+
     id_ = 0
     for ex in pairsByExchange:
         for pair_on_long in pairsByExchange[ex]["LONG"]:
             for other_ex in pairsByExchange:
                 if other_ex != ex:
                     for pair_on_short in pairsByExchange[other_ex]["SHORT"]:
-
-                        if (pair_on_short == pair_on_long):
-                            if pairsByExchange[other_ex]["SHORT"][pair_on_short] == pairsByExchange[ex]["LONG"][
-                                pair_on_long]:
-                                str_pair = pairsByExchange[other_ex]["SHORT"][pair_on_short] + "_" + pair_on_short;
+                        if exchanges[other_ex].getAlias(pair_on_short) == exchanges[ex].getAlias(pair_on_long):
+                            # print pair_on_long
+                            # print "Comparing "+str(exchanges[ex].getExchangeName()) + " with "+ str(exchanges[other_ex].getExchangeName()) +" : "+ str(pairsByExchange[other_ex]["SHORT"][pair_on_short]) + "with" + str(pairsByExchange[ex]["LONG"][pair_on_long])
+                            if pairsByExchange[other_ex]["SHORT"][pair_on_short] == pairsByExchange[ex]["LONG"][pair_on_long]:
+                                str_pair = exchanges[other_ex].getAlias(pair_on_short) + "_" + pairsByExchange[other_ex]["SHORT"][pair_on_short];
                                 combinations.append({'id': id_, 'pair': str_pair, 'LongEx': ex, 'ShortEx': other_ex});
                                 id_ = id_ + 1
                             pass

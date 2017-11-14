@@ -11,7 +11,8 @@ class poloniex:
     def __init__(self, APIKey, Secret):
         self.APIKey = APIKey
         self.Secret = Secret
-        self.nonce_sync = 3100000000000
+        self.nonce_sync = 0
+        self.timeout = 5
 
     def post_process(self, before):
         after = before
@@ -30,13 +31,13 @@ class poloniex:
 
         try:
             if(command == "returnTicker" or command == "return24Volume"):
-                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command))
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command), timeout=self.timeout)
                 return json.loads(ret.read())
             elif(command == "returnOrderBook"):
-                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command + '&currencyPair=' + str(req['currencyPair'])))
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command + '&currencyPair=' + str(req['currencyPair'])), timeout=self.timeout)
                 return json.loads(ret.read())
             elif(command == "returnMarketTradeHistory"):
-                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + "returnTradeHistory" + '&currencyPair=' + str(req['currencyPair'])))
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + "returnTradeHistory" + '&currencyPair=' + str(req['currencyPair'])), timeout=self.timeout)
                 return json.loads(ret.read())
             else:
                 req['command'] = command
@@ -50,7 +51,7 @@ class poloniex:
                 }
 
 
-                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/tradingApi', post_data, headers))
+                ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/tradingApi', post_data, headers), timeout=self.timeout)
                 jsonRet = json.loads(ret.read())
                 return self.post_process(jsonRet)
 
@@ -62,7 +63,7 @@ class poloniex:
             print str_
             if str_.find("Nonce") != 1:
                 print "Warning: Bug on Nonce, trying to correct!"
-                self.nonce_sync = self.nonce_sync + 1000000000000
+                self.nonce_sync = req['nonce'] + 1000000000000
                 return self.api_query(command, req)
             return self.post_process({})
 

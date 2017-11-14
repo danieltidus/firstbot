@@ -165,7 +165,7 @@ class Poloniex (Exchange):
                     break
                 else:
                     total_amount = total_amount + float(order["total"])
-                    
+
             return total_amount
         except Exception, error:
             print("[Poloniex] Error getting btc value of an order!")
@@ -222,7 +222,8 @@ class Poloniex (Exchange):
 
             for key in result.keys():
                 str_array = key.split('_')
-                long_pairs[str_array[1]] = str_array[0]
+                if str_array[0] == "BTC":
+                    long_pairs[str_array[1]] = str_array[0]
 
             m_type["LONG"] = long_pairs
 
@@ -230,7 +231,8 @@ class Poloniex (Exchange):
 
             for key in result.keys():
                 str_array = key.split('_')
-                short_pairs[str_array[1]] = str_array[0]
+                if str_array[0] == "BTC":
+                    short_pairs[str_array[1]] = str_array[0]
 
             m_type["SHORT"] = short_pairs
 

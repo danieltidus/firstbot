@@ -87,3 +87,21 @@ class Exchange(object):
     def closeAllPositions(self, currencyPair):
         print "Method closeAllPositions not implemented to " + self.exchangeName;
         return -1
+
+
+    def getBTCByPair(self, currencyPair):
+        print "Method getBTCByPair not implemented to " + self.exchangeName;
+        return -1
+
+
+    def returnHistory(self,currencyPair, days=3):
+        print "Method returnHistory not implemented to " + self.exchangeName;
+        return {}
+
+
+    def getRealCost(self, amount):
+        print "Method getRealCost not implemented to " + self.exchangeName;
+        return -1
+        
+    def getAlias(self, currency):
+        return currency

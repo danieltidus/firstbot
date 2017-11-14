@@ -13,19 +13,24 @@ COIN_PAIR = 'BTC_XMR'
 ORDER_NUMBER ='345584f3-5ff0-43c2-a65c-acd3b3fcc10a'
 fac = ExchangeFactory()
 
-exchanges = {'Poloniex': fac.create('Poloniex'), 'Bittrex': fac.create('Bittrex')}
+exchanges = {'Bittrex': fac.create('Bittrex'), 'Poloniex': fac.create('Poloniex')}
 
 pp = pprint.PrettyPrinter(indent=4)
 
+print "Pares Poloniex"
+pp.pprint(exchanges['Poloniex'].getLongShortPairs())
+
+print "Combinations"
+pp.pprint(botlib.findCombinations(exchanges))
 
 #pp.pprint(exchanges['Poloniex'].getBid(COIN_PAIR))
 #pp.pprint(exchanges['Poloniex'].getAsk(COIN_PAIR))
 
-#UUID = exchanges['Bittrex'].sell(COIN_PAIR, 0.00760704,2)
+#UUID = exchanges['Poloniex'].sell(COIN_PAIR, 0.00760704,2)
 #pp.pprint(UUID)
 # pp.pprint(exchanges['Poloniex'].haveOpenOrder(COIN_PAIR))
 
-#print  exchanges['Bittrex'].getOrderBTCValue('ef565f3a-788a-4fc8-8c33-1c86c74209df')
+#print  exchanges['Poloniex'].getOrderBTCValue('ef565f3a-788a-4fc8-8c33-1c86c74209df')
 
 # print "Get Balance short..."
 # balanceShort = exchanges['Poloniex'].getBalance('BTC')

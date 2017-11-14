@@ -11,6 +11,7 @@ class bitfinex(object):
         self.api_key = api_key
         self.api_secret = api_secret
         self.url = url
+        self.timeout = 5
 
     def construct_and_send(self, post_data, url_path):
             try:
@@ -20,12 +21,13 @@ class bitfinex(object):
                 post_data_encoded =  base64.b64encode(json.dumps(post_data))
                 sign = hmac.new(self.api_secret, post_data_encoded, hashlib.sha384).hexdigest()
                 headers = {'X-BFX-APIKEY' : self.api_key, 'X-BFX-PAYLOAD' : post_data_encoded, 'X-BFX-SIGNATURE' : sign}
-                req = requests.post(self.url + url_path, data=post_data, headers=headers,timeout=15).json()
+                req = requests.post(self.url + url_path, data=post_data, headers=headers,timeout=self.timeout).json()
                 return req
             except Exception,e: #retry on error
                 print e
                 time.sleep(10)
-                return self.construct_and_send(post_data, url_path)
+                # return self.construct_and_send(post_data, url_path)
+                return -1
 
     def open_order(self):
         url_path = '/orders'
@@ -78,10 +80,13 @@ class bitfinex(object):
 
     def order_book(self, symbol):
         try:
-            return requests.get(self.url + '/book/' + symbol).json()
+            return requests.get(self.url + '/book/' + symbol , timeout=self.timeout).json()
         except Exception, e:
             print e
             return self.order_book(symbol)
 
     def ticker(self, symbol):
-        return requests.get(self.url + '/pubticker/' + symbol).json()
+        return requests.get(self.url + '/pubticker/' + symbol, timeout=self.timeout).json()
+
+    def symbols(self):
+        return requests.get(self.url + '/symbols', timeout=self.timeout).json()
