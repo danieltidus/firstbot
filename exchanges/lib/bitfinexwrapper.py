@@ -11,7 +11,7 @@ class bitfinex(object):
         self.api_key = api_key
         self.api_secret = api_secret
         self.url = url
-        self.timeout = 5
+        self.timeout = 80
 
     def construct_and_send(self, post_data, url_path):
             try:

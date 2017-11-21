@@ -12,7 +12,7 @@ class poloniex:
         self.APIKey = APIKey
         self.Secret = Secret
         self.nonce_sync = 0
-        self.timeout = 5
+        self.timeout = 80
 
     def post_process(self, before):
         after = before

@@ -254,6 +254,11 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
             return -1000
 
 
+    
+
+    altlong = exchangeLong.getBalance(altcoin)
+    altshort = exchangeShort.getMarginBalance(currencyPair)
+
 
     if altlong <= 0.0 or altshort <= 0.0:
         st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
@@ -505,16 +510,28 @@ def secureOut(exchangeLong, exchangeShort, balanceLongAltCoin, balanceShortAltCo
                 telegram_send.send([st_])
 
 
-    #Just to close some trash values that resist on short position
-    res = exchangeShort.closeMarginPosition(currencyPair)
-    if res == -1:
-        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
-            currencyPair) + "] FATAL ERROR completing operation closeMarginPosition. Houston, we have a problem!"
-        logger.info(st_)
-        #utils.sendmail('Bot fail', st_)
-        telegram_send.send([st_])
-        exit(-1)
-    pass
+            #Just to close some trash values that resist on short position
+            res = exchangeShort.closeMarginPosition(currencyPair)
+            if res == -1:
+               st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+               currencyPair) + "] FATAL ERROR completing operation closeMarginPosition. Houston, we have a problem!"
+               logger.info(st_)
+               #utils.sendmail('Bot fail', st_)
+               telegram_send.send([st_])
+               exit(-1)
+            pass
+
+
+            #Just to close some trash values that resist on short position
+            res = exchangeShort.closeMarginPosition(currencyPair)
+            if res == -1:
+               st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureOut::[" + str(
+               currencyPair) + "] FATAL ERROR completing operation closeMarginPosition. Houston, we have a problem!"
+               logger.info(st_)
+               #utils.sendmail('Bot fail', st_)
+               telegram_send.send([st_])
+               exit(-1)
+            pass
 
 
     #

@@ -201,6 +201,7 @@ class Bittrex (Exchange):
                         while res['result']['IsOpen'] == True:
                             print "Ordem esta cadastrada mas nao concluida, vamos esperar...Slippage??????"
                             time.sleep(3)
+                            res = self.bit.get_order(order)
                         pass
                         print "Reversao concluida com sucesso"
                         return 0
