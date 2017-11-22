@@ -1,0 +1,3 @@
+[submodule "exchanges"]
+	path = exchanges
+	url = https://github.com/danieltidus1/exchanges.git
