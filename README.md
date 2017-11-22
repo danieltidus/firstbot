@@ -5,4 +5,4 @@
 ### Module requests
 
 `$ pip install requests`
-`$ git submodule init 
+`$ git submodule init `
