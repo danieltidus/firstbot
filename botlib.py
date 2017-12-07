@@ -215,6 +215,10 @@ def secureIn(exchangeLong, exchangeShort, balanceLong, balanceShort, currencyPai
     while complete == False:
         openLong = exchangeLong.hasOpenOrder(currencyPair)
         openShort = exchangeShort.hasOpenOrder(currencyPair)
+        st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
+            currencyPair) + "] So, Do we have open order? Open on long: " + str(openLong) + " Open on short: " + str(openShort)
+        logger.info(st_)
+
         if openLong == True or openShort == True:
             st_ = "[ " + str(datetime.now().ctime()) + " ] " + "secureIn::[" + str(
                 currencyPair) + "] Uncompleted orders, waiting... (Slippage???). Status long: " + str(openLong) + " Status short: " + str(openShort)
