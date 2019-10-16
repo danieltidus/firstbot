@@ -1,5 +1,5 @@
 # firstbot
-
+Just another Arbitrage bot for crypto.
 ## Dependencies
 
 ### Module requests
